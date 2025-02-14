@@ -12,5 +12,5 @@ typedef struct Firm_info
 } firm_info;
 
 
-firm_info* input_firm_name(int number_of_firms);
+firm_info** input_firm_name(int number_of_firms);
 #endif
