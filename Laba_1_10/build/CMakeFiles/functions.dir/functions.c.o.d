@@ -57,8 +57,5 @@ CMakeFiles/functions.dir/functions.c.o: \
   /usr/include/x86_64-linux-gnu/bits/struct_rwlock.h \
   /usr/include/alloca.h \
   /usr/include/x86_64-linux-gnu/bits/stdlib-float.h \
-  /usr/include/string.h /usr/include/strings.h /usr/include/wchar.h \
-  /usr/include/x86_64-linux-gnu/bits/wchar.h \
-  /usr/include/x86_64-linux-gnu/bits/types/wint_t.h \
-  /usr/include/x86_64-linux-gnu/bits/types/mbstate_t.h \
+  /usr/include/string.h /usr/include/strings.h \
   /home/tim/2-sem/Laba_1_10/header.h
