@@ -41,15 +41,15 @@ int str_compare(const char* str1, const char* str2)
     
     if (len1 != len2)
     {
-        printf("Not Equal len\n");
-        printf("Len of mon = %d, len of input = %d\n", len1, len2);
+        // printf("Not Equal len\n");
+        // printf("Len of mon = %d, len of input = %d\n", len1, len2);
         return 0;
     } 
     for (int i = 0; i < len1; i++) 
     {
         if (str1[i] != str2[i]) 
         {
-            printf("Not Equal char [%d]\n", i);
+            // printf("Not Equal char [%d]\n", i);
             return 0;
         }
     }
@@ -69,9 +69,77 @@ int is_valid_date(const char* str)
     {
         if (str_compare(en_months[i], str)) count++;
     }
-    printf("count = %d\n", count);
+    // printf("count = %d\n", count);
     if (count) return 1;
     return 0;
+}
+//* =========================== TOP-5 ===============================
+
+int compare(const void* a, const void* b) 
+{
+    return (*(int*)b - *(int*)a); 
+}
+
+int what_month(const char* str) 
+{ 
+    const char* en_months[12] = 
+    { 
+        "January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December" 
+    }; 
+    for (int i = 0; i < 12; i++) 
+    { 
+        if (str_compare(str, en_months[i])) return i; 
+    } 
+    return 0; 
+}
+
+char* int_to_str(int num) {
+    // Determine the number of digits in the integer
+    int length = snprintf(NULL, 0, "%d", num);
+
+    // Allocate memory for the string (+1 for the null terminator)
+    char* str = (char*)malloc(length + 1);
+
+    if (str == NULL) {
+        // Handle memory allocation failure
+        fprintf(stderr, "Memory allocation failed\n");
+        return NULL;
+    }
+
+    // Convert the integer to a string
+    snprintf(str, length + 1, "%d", num);
+
+    return str;
+}
+
+int* find_top_5(firm_info* list_of_firms, int number_of_firms, const char* month) {
+    int* list_of_taxes = (int*)malloc(number_of_firms * sizeof(int));
+    int* top_5 = (int*)calloc(5, sizeof(int));
+    int count = 0;
+
+    // Преобразуем налоги в целые числа
+    for (int i = 0; i < number_of_firms; i++) {
+        list_of_taxes[i] = atoi(list_of_firms[i].taxes);
+    }
+
+    // Сортируем налоги по убыванию
+    qsort(list_of_taxes, number_of_firms, sizeof(int), compare);
+
+    // Находим топ-5 фирм с наибольшими налогами, которые ещё не заплачены
+    for (int i = 0; i < number_of_firms && count < 5; i++) {
+        for (int j = 0; j < number_of_firms; j++) {
+            if (list_of_taxes[i] == atoi(list_of_firms[j].taxes) &&
+                what_month(list_of_firms[j].taxes_payed) < what_month(month)) {
+                top_5[count] = j;
+                count++;
+                break; // Переходим к следующему налогу
+            }
+        }
+    }
+
+    free(list_of_taxes);
+    return top_5;
 }
 //* =========================== INPUT ===============================
 void input_int_var(int* a, int t, int min, int max)						// функция ввода и проверки целых чисел
@@ -262,28 +330,28 @@ void input_firm_dates(firm_info* list_of_firms, int number_of_firms) {
             }
 
 
-            printf("Len = %d\n", len);
-            printf("String: ");
-            for (int j = 0; j < len; j++)
-            {
-                if (date[j] == '\n') printf("n ");
-                else if (date[j] == '\0') printf("0 ");
-                else printf("%c ", date[j]);
-            }
+            // printf("Len = %d\n", len);
+            // printf("String: ");
+            // for (int j = 0; j < len; j++)
+            // {
+            //     if (date[j] == '\n') printf("n ");
+            //     else if (date[j] == '\0') printf("0 ");
+            //     else printf("%c ", date[j]);
+            // }
             printf("\n");
 
             date[len - 1] = '\0'; // Удаляем символ новой строки
             len--; // Уменьшаем длину после удаления '\n'
 
-            printf("Len2 = %d\n", len);
-            printf("String2: ");
-            for (int j = 0; j < len; j++)
-            {
-                if (date[j] == '\n') printf("n ");
-                else if (date[j] == '\0') printf("0 ");
-                else printf("%c ", date[j]);
-            }
-            printf("\n");
+            // printf("Len2 = %d\n", len);
+            // printf("String2: ");
+            // for (int j = 0; j < len; j++)
+            // {
+            //     if (date[j] == '\n') printf("n ");
+            //     else if (date[j] == '\0') printf("0 ");
+            //     else printf("%c ", date[j]);
+            // }
+            // printf("\n");
 
             // Проверка на пустую строку
             if (len == 0) {
@@ -385,13 +453,14 @@ void output_firm_info(firm_info* list_of_firms, int number_of_firms, int t)
 
 void output_top_5(firm_info* list_of_firms, int number_of_firms, const char* month)
 {
+    int* top_5 = find_top_5(list_of_firms, number_of_firms, month);
 	printf("Топ-5 фирм с самыми большими непогашенными налогами в %s:\n", month);
 	printf("+-------------------------------------------------------------------------+\n");
 	printf("| № |          Название фирмы        | налоги  |   дедлайн   | дата оплат |\n");
 	printf("+-------------------------------------------------------------------------+\n");
-	for (int i = 0; i < number_of_firms; i++) 
+	for (int i = 0; i < 5; i++) 
 	{
-		printf("| %d | %s | %s | %s  | %s |\n", i, list_of_firms[i].name, list_of_firms[i].taxes, list_of_firms[i].taxes_deadline, list_of_firms[i].taxes_payed);
+		printf("| %d | %s | %s | %s  | %s |\n", i, list_of_firms[top_5[i]].name, list_of_firms[top_5[i]].taxes, list_of_firms[top_5[i]].taxes_deadline, list_of_firms[top_5[i]].taxes_payed);
 		printf("+-------------------------------------------------------------------------+\n");
 	}
 }
