@@ -4,16 +4,23 @@
 // информация о фирме
 typedef struct Firm_info 
 {
-    char name[32];
+    char name[62];
     char taxes[9];
-    char taxes_deadline[12];
-    char taxes_payed[12];
+    char taxes_deadline[22];
+    char taxes_payed[22];
 } firm_info;
 
 firm_info* firm_info_alloc(int number_of_firms);
+void firm_info_free(firm_info* list_of_firms);
 
 int is_numeric(const char* str);
 int is_valid_num(const char* str);
+int str_compare(const char* str1, const char* str2);
+int is_valid_date(const char* str);
+
+int compare(const void* a, const void* b);
+int what_month(const char* str);
+int* find_top_5(firm_info* list_of_firms, int number_of_firms, const char* month);
 
 void input_int_var(int* a, int t, int min, int max)	;
 const char* input_month();
@@ -24,8 +31,6 @@ void input_firm_dates(firm_info* list_of_firms, int number_of_firms);
 
 void output_firm_info(firm_info* list_of_firms, int number_of_firms, int t);
 void output_top_5(firm_info* list_of_firms, int number_of_firms, const char* month);
-
-void firm_info_free(firm_info* list_of_firms);
 
 void restart_program(int* flag);
 #endif

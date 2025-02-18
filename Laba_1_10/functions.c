@@ -63,11 +63,15 @@ int is_valid_date(const char* str)
         "0", "January", "February", "March", "April", "May", "June",
         "July", "August", "September", "October", "November", "December"
     };
-
+    const char* ru_months[12] = 
+    { 
+        "Январь", "Февраль", "Март", "Апрель", "Май", "Июнь",
+        "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декобрь" 
+    };
     int count = 0;
     for (int i = 0; i < 13; i++) 
     {
-        if (str_compare(en_months[i], str)) count++;
+        if (str_compare(en_months[i], str) || str_compare(str, ru_months[i])) count++;
     }
     // printf("count = %d\n", count);
     if (count) return 1;
@@ -86,31 +90,17 @@ int what_month(const char* str)
     { 
         "January", "February", "March", "April", "May", "June",
         "July", "August", "September", "October", "November", "December" 
-    }; 
+    };
+    const char* ru_months[12] = 
+    { 
+        "Январь", "Февраль", "Март", "Апрель", "Май", "Июнь",
+        "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декобрь" 
+    };
     for (int i = 0; i < 12; i++) 
     { 
-        if (str_compare(str, en_months[i])) return i; 
+        if (str_compare(str, en_months[i]) || str_compare(str, ru_months[i])) return i; 
     } 
     return 0; 
-}
-
-char* int_to_str(int num) {
-    // Determine the number of digits in the integer
-    int length = snprintf(NULL, 0, "%d", num);
-
-    // Allocate memory for the string (+1 for the null terminator)
-    char* str = (char*)malloc(length + 1);
-
-    if (str == NULL) {
-        // Handle memory allocation failure
-        fprintf(stderr, "Memory allocation failed\n");
-        return NULL;
-    }
-
-    // Convert the integer to a string
-    snprintf(str, length + 1, "%d", num);
-
-    return str;
 }
 
 int* find_top_5(firm_info* list_of_firms, int number_of_firms, const char* month) {
@@ -189,6 +179,11 @@ const char* input_month()
         "January", "February", "March", "April", "May", "June",
         "July", "August", "September", "October", "November", "December"
     };
+    const char* ru_months[12] = 
+    { 
+        "Январь", "Февраль", "Март", "Апрель", "Май", "Июнь",
+        "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декобрь" 
+    };
     int choice = 0;
     input_int_var(&choice, 2, 1, 12);
     return en_months[choice - 1];
@@ -196,54 +191,73 @@ const char* input_month()
 
 void input_firm_name(firm_info* list_of_firms, int number_of_firms) 
 {
-    char name[32];
+    char name[64]; // Увеличен размер буфера для учета многобайтовых символов
 
     for (int i = 0; i < number_of_firms; i++) 
-	{
+    {
         int valid = 0;
         while (!valid) 
-		{
+        {
             printf("Введите название %d-й фирмы (не более 30 символов): ", i + 1);
-            if (fgets(name, 32, stdin) == NULL) 
-			{
-                printf("\033[1;31m Ошибка ввода. Пожалуйста, попробуйте ещё раз.\033[0m\n");
+            if (fgets(name, sizeof(name), stdin) == NULL) 
+            {
+                printf("\033[1;31mОшибка ввода. Пожалуйста, попробуйте ещё раз.\033[0m\n");
                 continue;
             }
 
-			int length = strlen(name);
-			
-            // Проверяем, была ли введена слишком длинная строка
-            if (name[length - 1] != '\n') 
-			{
-                // Очищаем оставшиеся символы в буфере ввода
-                int c;
-                while ((c = getchar()) != '\n' && c != EOF);
-                printf("\033[1;31m Название слишком длинное. Пожалуйста, введите название не более 30 символов.\033[0m\n");
-            } else 
-			{
+            // Удаляем символ новой строки, если он есть
+            name[strcspn(name, "\n")] = '\0';
 
-				if (length == 0) 
-				{
-					printf("\033[1;31m Название не может быть пустым. Пожалуйста, попробуйте ещё раз.\033[0m\n");
-					continue;
-				}
-
-                // Удаляем символ новой строки '\n'
-                name[length - 1] = '\0';
-
-				// Заполнение оставшегося места пробелами для выравнивания
-                if (length < 30) 
-				{
-                    for (int j = length - 1; j < 30; j++) 
-					{
-                        name[j] = ' ';
-                    }
-                    name[30] = '\0'; // Добавляем завершающий нулевой символ
+            // Вычисляем количество UTF-8 символов
+            int char_count = 0;
+            for (char* p = name; *p != '\0';) 
+            {
+                if ((*p & 0x80) == 0)
+                    p += 1; // 1-байтовый символ (ASCII)
+                else if ((*p & 0xE0) == 0xC0)
+                    p += 2; // 2-байтовый символ
+                else if ((*p & 0xF0) == 0xE0)
+                    p += 3; // 3-байтовый символ
+                else if ((*p & 0xF8) == 0xF0)
+                    p += 4; // 4-байтовый символ
+                else 
+                {
+                    printf("\033[1;31mНеверная кодировка символов. Пожалуйста, используйте UTF-8.\033[0m\n");
+                    char_count = -1;
+                    break;
                 }
-
-                strcpy(list_of_firms[i].name, name);
-                valid = 1; // Ввод корректен, выходим из цикла
+                char_count++;
             }
+
+            if (char_count == -1)
+                continue;
+
+            if (char_count == 0) 
+            {
+                printf("\033[1;31mНазвание не может быть пустым. Пожалуйста, попробуйте ещё раз.\033[0m\n");
+                continue;
+            }
+
+            if (char_count > 30) 
+            {
+                printf("\033[1;31mНазвание слишком длинное. Пожалуйста, введите название не более 30 символов.\033[0m\n");
+                continue;
+            }
+
+            // Заполнение оставшегося места пробелами для выравнивания
+            int name_len = strlen(name);
+            if (char_count < 30) 
+            {
+                // Добавляем пробелы (предполагая, что пробелы занимают 1 байт в UTF-8)
+                for (int j = 0; j < (30 - char_count); j++) 
+                {
+                    name[name_len++] = ' ';
+                }
+                name[name_len] = '\0'; // Добавляем завершающий нулевой символ
+            }
+
+            strncpy(list_of_firms[i].name, name, sizeof(list_of_firms[i].name));
+            valid = 1; // Ввод корректен, выходим из цикла
         }
     }
 }
@@ -307,7 +321,7 @@ void input_firm_taxes(firm_info* list_of_firms, int number_of_firms) {
 }
 
 void input_firm_dates(firm_info* list_of_firms, int number_of_firms) {
-    char date[12]; // Буфер для строки ввода (максимум 10 символов + '\0')
+    char date[32]; // Увеличен размер буфера для учета многобайтовых символов
 
     for (int i = 0; i < number_of_firms; i++) {
         // Ввод даты последнего срока внесения налога
@@ -315,65 +329,62 @@ void input_firm_dates(firm_info* list_of_firms, int number_of_firms) {
         while (!valid_deadline) {
             printf("Введите дату последнего срока внесения налога для фирмы %s (месяц): ", list_of_firms[i].name);
             if (fgets(date, sizeof(date), stdin) == NULL) {
-                printf("\033[1;31m Ошибка ввода. Пожалуйста, попробуйте ещё раз.\033[0m\n");
+                printf("\033[1;31mОшибка ввода. Пожалуйста, попробуйте ещё раз.\033[0m\n");
                 continue;
             }
 
-            unsigned int len = strlen(date);
+            // Удаляем символ новой строки, если он есть
+            date[strcspn(date, "\n")] = '\0';
 
-            // Проверяем, была ли введена слишком длинная строка
-            if (date[len - 1] != '\n') {
-                int c;
-                while ((c = getchar()) != '\n' && c != EOF);
-                printf("\033[1;31m Введено слишком много символов. Пожалуйста, введите дату в формате месяц.\033[0m\n");
+            // Вычисляем количество символов UTF-8
+            int char_count = 0;
+            char* p = date;
+            while (*p) {
+                if ((*p & 0x80) == 0)
+                    p += 1; // 1-байтовый символ (ASCII)
+                else if ((*p & 0xE0) == 0xC0)
+                    p += 2; // 2-байтовый символ
+                else if ((*p & 0xF0) == 0xE0)
+                    p += 3; // 3-байтовый символ
+                else if ((*p & 0xF8) == 0xF0)
+                    p += 4; // 4-байтовый символ
+                else {
+                    printf("\033[1;31mНеверная кодировка символов. Пожалуйста, используйте UTF-8.\033[0m\n");
+                    char_count = -1;
+                    break;
+                }
+                char_count++;
+            }
+
+            if (char_count == -1)
+                continue;
+
+            if (char_count == 0) {
+                printf("\033[1;31mДата не может быть пустой. Попробуйте ещё раз.\033[0m\n");
                 continue;
             }
 
-
-            // printf("Len = %d\n", len);
-            // printf("String: ");
-            // for (int j = 0; j < len; j++)
-            // {
-            //     if (date[j] == '\n') printf("n ");
-            //     else if (date[j] == '\0') printf("0 ");
-            //     else printf("%c ", date[j]);
-            // }
-            printf("\n");
-
-            date[len - 1] = '\0'; // Удаляем символ новой строки
-            len--; // Уменьшаем длину после удаления '\n'
-
-            // printf("Len2 = %d\n", len);
-            // printf("String2: ");
-            // for (int j = 0; j < len; j++)
-            // {
-            //     if (date[j] == '\n') printf("n ");
-            //     else if (date[j] == '\0') printf("0 ");
-            //     else printf("%c ", date[j]);
-            // }
-            // printf("\n");
-
-            // Проверка на пустую строку
-            if (len == 0) {
-                printf("\033[1;31m Дата не может быть пустой. Попробуйте ещё раз.\033[0m\n");
+            if (char_count > 10) {
+                printf("\033[1;31mВведено слишком много символов. Пожалуйста, введите дату в формате месяц (не более 10 символов).\033[0m\n");
                 continue;
             }
 
-            if (!is_valid_date(date)) 
-            {
-                printf("\033[1;31m Введено не название месяца или 0. Пожалуйста, повторите ввод.\033[0m\n");
+            if (!is_valid_date(date)) {
+                printf("\033[1;31mВведено некорректное название месяца или 0. Пожалуйста, повторите ввод.\033[0m\n");
                 continue;
             }
 
             // Заполнение оставшегося места пробелами
-            if (len < 10) {
-                for (int j = len; j < 10; j++) {
-                    date[j] = ' ';
+            int date_len = strlen(date);
+            if (char_count < 10) {
+                // Добавляем пробелы для выравнивания (предполагая, что пробел занимает 1 байт)
+                for (int j = 0; j < (10 - char_count); j++) {
+                    date[date_len++] = ' ';
                 }
-                date[10] = '\0'; // Добавляем завершающий нулевой символ
+                date[date_len] = '\0'; // Добавляем завершающий нулевой символ
             }
 
-            strcpy(list_of_firms[i].taxes_deadline, date);
+            strncpy(list_of_firms[i].taxes_deadline, date, sizeof(list_of_firms[i].taxes_deadline));
             valid_deadline = 1;
         }
 
@@ -382,44 +393,62 @@ void input_firm_dates(firm_info* list_of_firms, int number_of_firms) {
         while (!valid_payed) {
             printf("Введите дату фактического внесения налога для фирмы %s (месяц или 0, если не внесён): ", list_of_firms[i].name);
             if (fgets(date, sizeof(date), stdin) == NULL) {
-                printf("\033[1;31m Ошибка ввода. Пожалуйста, попробуйте ещё раз.\033[0m\n");
+                printf("\033[1;31mОшибка ввода. Пожалуйста, попробуйте ещё раз.\033[0m\n");
                 continue;
             }
 
-            unsigned int len = strlen(date);
+            // Удаляем символ новой строки, если он есть
+            date[strcspn(date, "\n")] = '\0';
 
-            // Проверяем, была ли введена слишком длинная строка
-            if (date[len - 1] != '\n') {
-                int c;
-                while ((c = getchar()) != '\n' && c != EOF);
-                printf("\033[1;31m Введено слишком много символов. Пожалуйста, введите дату в формате месяц.\033[0m\n");
+            // Вычисляем количество символов UTF-8
+            int char_count = 0;
+            char* p = date;
+            while (*p) {
+                if ((*p & 0x80) == 0)
+                    p += 1; // 1-байтовый символ (ASCII)
+                else if ((*p & 0xE0) == 0xC0)
+                    p += 2; // 2-байтовый символ
+                else if ((*p & 0xF0) == 0xE0)
+                    p += 3; // 3-байтовый символ
+                else if ((*p & 0xF8) == 0xF0)
+                    p += 4; // 4-байтовый символ
+                else {
+                    printf("\033[1;31mНеверная кодировка символов. Пожалуйста, используйте UTF-8.\033[0m\n");
+                    char_count = -1;
+                    break;
+                }
+                char_count++;
+            }
+
+            if (char_count == -1)
+                continue;
+
+            if (char_count == 0) {
+                printf("\033[1;31mДата не может быть пустой. Попробуйте ещё раз.\033[0m\n");
                 continue;
             }
 
-            date[len - 1] = '\0'; // Удаляем символ новой строки
-            len--; // Уменьшаем длину после удаления '\n'
-
-            // Проверка на пустую строку
-            if (len == 0) {
-                printf("\033[1;31m Дата не может быть пустой. Попробуйте ещё раз.\033[0m\n");
+            if (char_count > 10) {
+                printf("\033[1;31mВведено слишком много символов. Пожалуйста, введите дату в формате месяц (не более 10 символов).\033[0m\n");
                 continue;
             }
 
-            if (!is_valid_date(date)) 
-            {
-                printf("\033[1;31m Введено не название месяца. Пожалуйста, повторите ввод.\033[0m\n");
+            if (!is_valid_date(date)) {
+                printf("\033[1;31mВведено некорректное название месяца или 0. Пожалуйста, повторите ввод.\033[0m\n");
                 continue;
             }
 
             // Заполнение оставшегося места пробелами
-            if (len < 10) {
-                for (int j = len; j < 10; j++) {
-                    date[j] = ' ';
+            int date_len = strlen(date);
+            if (char_count < 10) {
+                // Добавляем пробелы для выравнивания
+                for (int j = 0; j < (10 - char_count); j++) {
+                    date[date_len++] = ' ';
                 }
-                date[10] = '\0'; // Добавляем завершающий нулевой символ
+                date[date_len] = '\0';
             }
 
-            strcpy(list_of_firms[i].taxes_payed, date);
+            strncpy(list_of_firms[i].taxes_payed, date, sizeof(list_of_firms[i].taxes_payed));
             valid_payed = 1;
         }
     }
