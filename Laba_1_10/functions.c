@@ -41,15 +41,12 @@ int str_compare(const char* str1, const char* str2)	// функция сравн
     
     if (len1 != len2)
     {
-        // printf("Not Equal len\n");
-        // printf("Len of mon = %d, len of input = %d\n", len1, len2);
         return 0;
     } 
     for (int i = 0; i < len1; i++) 
     {
-        if (str1[i] != str2[i]) 
+        if (*(str1 + i) != *(str2 + i)) 
         {
-            // printf("Not Equal char [%d]\n", i);
             return 0;
         }
     }
@@ -74,7 +71,7 @@ int is_valid_date(const char* str)					// функция проверки дат
 
     for (int i = 0; i < 13; i++)					// цикл по месяцам
     {
-        if (str_compare(en_months[i], str) || str_compare(str, ru_months[i])) count++;
+        if (str_compare((*(en_months + i)), str) || str_compare(str, (*(ru_months + i)))) count++;
     }
 
     if (count) return 1;
@@ -101,7 +98,7 @@ int what_month(const char* str) 					// функция определения п
     };
     for (int i = 0; i < 12; i++)					// цикл по месяцам
     { 
-        if (str_compare(str, en_months[i]) || str_compare(str, ru_months[i])) return i; 
+        if (str_compare(str, (*(en_months + i))) || str_compare(str, (*(ru_months + i)))) return i; 
     } 
     return 0; 
 }
@@ -114,9 +111,9 @@ int* find_top_5(firm_info* list_of_firms, int number_of_firms, const char* month
 
     for (int i = 0; i < number_of_firms; i++)												// gреобразование налогов в целые числа
 	{
-        list_of_taxes[i] = atoi(list_of_firms[i].taxes);
+        *(list_of_taxes + i) = atoi((*(list_of_firms + i)).taxes);
     }
-
+// TODO quick sort
     qsort(list_of_taxes, number_of_firms, sizeof(int), compare);							// сортировка налогов по убыванию
 
     // Находим топ-5 фирм с наибольшими налогами, которые ещё не заплачены
@@ -124,10 +121,10 @@ int* find_top_5(firm_info* list_of_firms, int number_of_firms, const char* month
 	{
         for (int j = 0; j < number_of_firms; j++) 											// цикл по фирмам
 		{
-            if (list_of_taxes[i] == atoi(list_of_firms[j].taxes) &&							// сравнение налога фирмы из топ-5 налогов и проверка оплаты 
-                what_month(list_of_firms[j].taxes_payed) < what_month(month)) 
+            if (*(list_of_taxes + i) == atoi((*(list_of_firms + j)).taxes) &&							// сравнение налога фирмы из топ-5 налогов и проверка оплаты 
+                what_month((*(list_of_firms + j)).taxes_payed) < what_month(month)) 
 			{
-                top_5[count] = j;															// запись индекса топ-5 фирмы в top_5
+                *(top_5 + count) = j;															// запись индекса топ-5 фирмы в top_5
                 count++;
                 break;
             }
@@ -234,18 +231,18 @@ void input_firm_name(firm_info* list_of_firms, int number_of_firms)		// функ
                 char_count++;
             }
 
-            if (char_count == -1)													// проверка наневерную кодировку
+            if (char_count == -1)													            // проверка наневерную кодировку
                 continue;
 			
-            int name_len = strlen(name); 											// получение длины строки	
+            int name_len = strlen(name); 											            // получение длины строки	
 
-            if (char_count == 0) 													// проверка на пустую строку
+            if (char_count == 0) 													            // проверка на пустую строку
             {
                 printf("\033[1;31m Название не может быть пустым. Пожалуйста, попробуйте ещё раз.\033[0m\n");
                 continue;
             }
 
-            if (char_count > 30)													// проверка на слишком большую строку
+            if (char_count > 30)													            // проверка на слишком большую строку
             {   
                 printf("\033[1;31mНазвание слишком длинное. Пожалуйста, введите название не более 30 символов.\033[0m\n");
                 continue;
@@ -253,17 +250,17 @@ void input_firm_name(firm_info* list_of_firms, int number_of_firms)		// функ
 			else if (name_len >= 61)
 				while ((c = getchar()) != '\n' && c != EOF);						
 
-            if (char_count < 30)													// Заполнение оставшегося места пробелами для выравнивания
+            if (char_count < 30)													            // Заполнение оставшегося места пробелами для выравнивания
             {
-                for (int j = 0; j < (30 - char_count); j++) 						// Добавление пробелов (пробелы занимают 1 байт в UTF-8)
+                for (int j = 0; j < (30 - char_count); j++) 						            // Добавление пробелов (пробелы занимают 1 байт в UTF-8)
                 {
-                    name[name_len++] = ' ';
+                    *(name + name_len++) = ' ';
                 }
-                name[name_len] = '\0'; 												// Добавление завершающего нулевого символа
+                *(name + name_len) = '\0'; 												        // Добавление завершающего нулевого символа
             }
 
-            strncpy(list_of_firms[i].name, name, sizeof(list_of_firms[i].name));	// копирование буффера в поле структуры
-            valid = 1; 																// Ввод корректен, выход из цикла
+            strncpy((*(list_of_firms + i)).name, name, sizeof((*(list_of_firms + i)).name));	// копирование буффера в поле структуры
+            valid = 1; 																            // Ввод корректен, выход из цикла
         }
     }
 }
@@ -278,83 +275,81 @@ void input_firm_taxes(firm_info* list_of_firms, int number_of_firms) 				// фу
         int valid = 0;																// переменная для проверки ввода
         while (!valid) 																// цикл ввода и проверки
 		{
-            printf("Введите величину налогообложения фирмы %s в рублях (не более 1000000): ", list_of_firms[i].name);
+            printf("Введите величину налогообложения фирмы %s в рублях (не более 1000000): ", (*(list_of_firms + i)).name);
             if (fgets(taxes, sizeof(taxes), stdin) == NULL) 						// ввод строки
 			{
                 printf("\033[1;31m Ошибка ввода. Пожалуйста, попробуйте ещё раз.\033[0m\n");
                 continue;
             }
 
-            unsigned int len = strlen(taxes);
+            unsigned int len = strlen(taxes);                                       // получение длины строки
 
-            // Проверяем, была ли введена слишком длинная строка
-            if (taxes[len - 1] != '\n') 
+            if (*(taxes + len - 1) != '\n')                                         // проверка на слишком большую строку
 			{
-                // Очищаем остаток буфера ввода
                 while ((c = getchar()) != '\n' && c != EOF);
                 printf("\033[1;31m Введено слишком много символов. Пожалуйста, введите не более 7 символов.\033[0m\n");
                 continue;
             }
 
-            taxes[len - 1] = '\0'; // Удаляем символ новой строки
-            len--; // Уменьшаем длину после удаления '\n'
+            *(taxes + len - 1) = '\0';                                              // Удаление символа новой строки
+            len--;                                                                  // Уменьшаем длину после удаления '\n'
 
-            // Проверка на пустую строку
-            if (len == 0) 
+            if (len == 0)                                                           // Проверка на пустую строку
 			{
                 printf("\033[1;31m Величина налогообложения не может быть пустой (введите 0, если её нет). Попробуйте ещё раз.\033[0m\n");
                 continue;
             }
 
-			if (!is_numeric(taxes))
+			if (!is_numeric(taxes))                                                 // проверка на бытиё чистом
 			{
                 printf("\033[1;31m Введено не числовое значение. Пожалуйста, повторите ввод.\033[0m\n");
                 continue;
 			}
 
-            if (!is_valid_num(taxes)) 
+            if (!is_valid_num(taxes))                                               // проверка на слишком большое число
             {
                 printf("\033[1;31m Число должно быть в пределе от 0 до 1000000. Пожалуйста, повторите ввод.\033[0m\n");
                 continue;
             }
 
-            // Заполнение оставшегося места пробелами для выравнивания
-            if (len < 7) 
+            if (len < 7)                                                            // Заполнение оставшегося места пробелами для выравнивания
 			{
-                for (unsigned int j = len; j < 7; j++) 
+                for (int j = len; j < 7; j++) 
 				{
-                    taxes[j] = ' ';
+                    *(taxes + j) = ' ';
                 }
-                taxes[7] = '\0'; // Добавляем завершающий нулевой символ
+                *(taxes + 7) = '\0';
             }
 
-            strcpy(list_of_firms[i].taxes, taxes);
-            valid = 1; // Ввод корректен
+            strcpy((*(list_of_firms + i)).taxes, taxes);                            // копирование буфера в поле структуры
+            valid = 1;                                                              // Ввод корректен, выход из цикла
         }
     }
 }
 
-void input_firm_dates(firm_info* list_of_firms, int number_of_firms) {
-    char date[32]; // Увеличен размер буфера для учета многобайтовых символов
-	int c;
+void input_firm_dates(firm_info* list_of_firms, int number_of_firms)                // функция ввода налогов
+{
+    char date[32];                                                                  // буфер для ввода строки
+	int c;                                                                          // переменная для очистки буфера ввода
 
-    for (int i = 0; i < number_of_firms; i++) {
-        // Ввод даты последнего срока внесения налога
-        int valid_deadline = 0;
-        while (!valid_deadline) {
-            printf("Введите дату последнего срока внесения налога для фирмы %s (месяц): ", list_of_firms[i].name);
-            if (fgets(date, sizeof(date), stdin) == NULL) {
-                printf("\033[1;31mОшибка ввода. Пожалуйста, попробуйте ещё раз.\033[0m\n");
+    for (int i = 0; i < number_of_firms; i++)                                       // цикл по фирмам
+    {
+        int valid_deadline = 0;                                                     // переменная для проверки ввода
+        while (!valid_deadline)                                                     // цикл ввода и проверки
+        {
+            printf("Введите дату последнего срока внесения налога для фирмы %s (месяц): ", (*(list_of_firms + i)).name);
+            if (fgets(date, sizeof(date), stdin) == NULL)                           // ввод строки
+            {
+                printf("\033[1;31m Ошибка ввода. Пожалуйста, попробуйте ещё раз.\033[0m\n");
                 continue;
             }
 
-            // Удаляем символ новой строки, если он есть
-            date[strcspn(date, "\n")] = '\0';
+            *(date + strcspn(date, "\n")) = '\0';                                   // Удаление символа новой строки, если он есть
 
-            // Вычисляем количество символов UTF-8
-            int char_count = 0;
-            char* p = date;
-            while (*p) {
+            int char_count = 0;                                                     // счётчик символов строки
+            char* p = date;                                                         // указатель на символ строки
+            while (*p)                                                              // цикл по символам строки
+            {
                 if ((*p & 0x80) == 0)
                     p += 1; // 1-байтовый символ (ASCII)
                 else if ((*p & 0xE0) == 0xC0)
@@ -363,65 +358,71 @@ void input_firm_dates(firm_info* list_of_firms, int number_of_firms) {
                     p += 3; // 3-байтовый символ
                 else if ((*p & 0xF8) == 0xF0)
                     p += 4; // 4-байтовый символ
-                else {
-                    printf("\033[1;31mНеверная кодировка символов. Пожалуйста, используйте UTF-8.\033[0m\n");
+                else 
+                {
+                    printf("\033[1;31m Неверная кодировка символов. Пожалуйста, используйте UTF-8.\033[0m\n");
                     char_count = -1;
                     break;
                 }
                 char_count++;
             }
 
-			int date_len = strlen(date);
+			int date_len = strlen(date);                                            // получение длины строки
 
-            if (char_count == -1)
+            if (char_count == -1)                                                   // проверка на неверную кодировку символов
                 continue;
 
-            if (char_count == 0) {
-                printf("\033[1;31mДата не может быть пустой. Попробуйте ещё раз.\033[0m\n");
+            if (char_count == 0)                                                    // проверка на пустую строку
+            {
+                printf("\033[1;31m Дата не может быть пустой. Попробуйте ещё раз.\033[0m\n");
                 continue;
             }
 
-            if (char_count > 10) {
-                printf("\033[1;31mВведено слишком много символов. Пожалуйста, введите дату в формате месяц (не более 10 символов).\033[0m\n");
+            if (char_count > 10)                                                    // проверка на слишком большую строку
+            {
+                printf("\033[1;31m Введено слишком много символов. Пожалуйста, введите дату в формате месяц (не более 10 символов).\033[0m\n");
                 continue;
             }
 			else if (date_len >= 21)
-				while ((c = getchar()) != '\n' && c != EOF);
+				while ((c = getchar()) != '\n' && c != EOF);                        // очистка буфера ввода
 
-            if (!is_valid_date(date)) {
-                printf("\033[1;31mВведено некорректное название месяца или 0. Пожалуйста, повторите ввод.\033[0m\n");
+            if (!is_valid_date(date))                                               // проверка на правильную дату
+            {
+                printf("\033[1;31m Введено некорректное название месяца или 0. Пожалуйста, повторите ввод.\033[0m\n");
                 continue;
             }
 
-            // Заполнение оставшегося места пробелами
-            if (char_count < 10) {
-                // Добавляем пробелы для выравнивания (предполагая, что пробел занимает 1 байт)
-                for (int j = 0; j < (10 - char_count); j++) {
-                    date[date_len++] = ' ';
+            if (char_count < 10)                                                    // Заполнение оставшегося места пробелами
+            {
+                for (int j = 0; j < (10 - char_count); j++) 
+                {
+                    *(date + date_len++) = ' ';
                 }
-                date[date_len] = '\0'; // Добавляем завершающий нулевой символ
+                *(date + date_len) = '\0';
             }
 
-            strncpy(list_of_firms[i].taxes_deadline, date, sizeof(list_of_firms[i].taxes_deadline));
+            strncpy((*(list_of_firms + i)).taxes_deadline, date,\
+            sizeof((*(list_of_firms + i)).taxes_deadline));                         // копирование буфера в поле структуры
             valid_deadline = 1;
         }
 
         // Ввод даты фактического внесения налога
-        int valid_payed = 0;
-        while (!valid_payed) {
-            printf("Введите дату фактического внесения налога для фирмы %s (месяц или 0, если не внесён): ", list_of_firms[i].name);
-            if (fgets(date, sizeof(date), stdin) == NULL) {
-                printf("\033[1;31mОшибка ввода. Пожалуйста, попробуйте ещё раз.\033[0m\n");
+        int valid_payed = 0;                                                        // переменная для проверки ввода
+        while (!valid_payed)                                                        // цикл ввода и проверки
+        {
+            printf("Введите дату фактического внесения налога для фирмы %s (месяц или 0, если не внесён): ", (*(list_of_firms + i)).name);
+            if (fgets(date, sizeof(date), stdin) == NULL)                           // ввод строки
+            {
+                printf("\033[1;31m Ошибка ввода. Пожалуйста, попробуйте ещё раз.\033[0m\n");
                 continue;
             }
 
-            // Удаляем символ новой строки, если он есть
-            date[strcspn(date, "\n")] = '\0';
+            *(date + strcspn(date, "\n")) = '\0';                                   // Удаление символа новой строки, если он есть
 
-            // Вычисляем количество символов UTF-8
-            int char_count = 0;
-            char* p = date;
-            while (*p) {
+            int char_count = 0;                                                     // счётчик UTF-8 символов в строке
+            char* p = date;                                                         // указатель на символ строки
+            while (*p)                                                              // цикл по строке
+            {
                 if ((*p & 0x80) == 0)
                     p += 1; // 1-байтовый символ (ASCII)
                 else if ((*p & 0xE0) == 0xC0)
@@ -430,53 +431,57 @@ void input_firm_dates(firm_info* list_of_firms, int number_of_firms) {
                     p += 3; // 3-байтовый символ
                 else if ((*p & 0xF8) == 0xF0)
                     p += 4; // 4-байтовый символ
-                else {
-                    printf("\033[1;31mНеверная кодировка символов. Пожалуйста, используйте UTF-8.\033[0m\n");
+                else 
+                {
+                    printf("\033[1;31m Неверная кодировка символов. Пожалуйста, используйте UTF-8.\033[0m\n");
                     char_count = -1;
                     break;
                 }
                 char_count++;
             }
 
-			int date_len = strlen(date);
+			int date_len = strlen(date);                                            // получение длины строки
 
-            if (char_count == -1)
+            if (char_count == -1)                                                   // проверка на неправильную кодировку
                 continue;
 
-            if (char_count == 0) {
+            if (char_count == 0)                                                    // проверка на пустую строку
+            {
                 printf("\033[1;31mДата не может быть пустой. Попробуйте ещё раз.\033[0m\n");
                 continue;
             }
 
-            if (char_count > 10) {
+            if (char_count > 10)                                                    // проверка на слишком длинную строку
+            {
                 printf("\033[1;31mВведено слишком много символов. Пожалуйста, введите дату в формате месяц (не более 10 символов).\033[0m\n");
                 continue;
             }
 			else if (date_len >= 21)
 				while ((c = getchar()) != '\n' && c != EOF);
 
-            if (!is_valid_date(date)) {
+            if (!is_valid_date(date))                                               // проверка на правильный формат даты
+            {
                 printf("\033[1;31mВведено некорректное название месяца или 0. Пожалуйста, повторите ввод.\033[0m\n");
                 continue;
             }
-
-            // Заполнение оставшегося места пробелами
             
-            if (char_count < 10) {
-                // Добавляем пробелы для выравнивания
-                for (int j = 0; j < (10 - char_count); j++) {
-                    date[date_len++] = ' ';
+            if (char_count < 10)                                                    // Заполнение оставшегося места пробелами
+            {
+                for (int j = 0; j < (10 - char_count); j++) 
+                {
+                    *(date + date_len++) = ' ';
                 }
-                date[date_len] = '\0';
+                *(date + date_len) = '\0';
             }
 
-            strncpy(list_of_firms[i].taxes_payed, date, sizeof(list_of_firms[i].taxes_payed));
-            valid_payed = 1;
+            strncpy((*(list_of_firms + i)).taxes_payed, date, \
+            sizeof((*(list_of_firms + i)).taxes_payed));                            // копирование буфера в поле структуры
+            valid_payed = 1;                                                        // ввод корректен, выход из цикла
         }
     }
 }
 //* ======================== OUTPUT ========================
-void output_firm_info(firm_info* list_of_firms, int number_of_firms, int t)
+void output_firm_info(firm_info* list_of_firms, int number_of_firms, int t)         // функция вывода данных о фирмах
 {
 	printf("Данные о фирмах:\n");
 	printf("+-------------------------------------------------------------------------+\n");
@@ -487,22 +492,22 @@ void output_firm_info(firm_info* list_of_firms, int number_of_firms, int t)
 		switch (t) 
 		{
 			case 1:
-			printf("| %d | %s |  NULL   |    NULL     |    NULL    |\n", i, list_of_firms[i].name);
+			printf("| %d | %s |  NULL   |    NULL     |    NULL    |\n", i, (*(list_of_firms + i)).name);
 			printf("+-------------------------------------------------------------------------+\n");
 			break;
 			case 2:
-			printf("| %d | %s | %s |    NULL     |    NULL    |\n", i, list_of_firms[i].name, list_of_firms[i].taxes);
+			printf("| %d | %s | %s |    NULL     |    NULL    |\n", i, (*(list_of_firms + i)).name, (*(list_of_firms + i)).taxes);
 			printf("+-------------------------------------------------------------------------+\n");
 			break;
 			case 3:
-			printf("| %d | %s | %s | %s  | %s |\n", i, list_of_firms[i].name, list_of_firms[i].taxes, list_of_firms[i].taxes_deadline, list_of_firms[i].taxes_payed);
+			printf("| %d | %s | %s | %s  | %s |\n", i, (*(list_of_firms + i)).name, (*(list_of_firms + i)).taxes, (*(list_of_firms + i)).taxes_deadline, (*(list_of_firms + i)).taxes_payed);
 			printf("+-------------------------------------------------------------------------+\n");
 			break;
 		}
 	}
 }
 
-void output_top_5(firm_info* list_of_firms, int number_of_firms, const char* month)
+void output_top_5(firm_info* list_of_firms, int number_of_firms, const char* month)	// функция вывода топ-5 фирм по налогам
 {
     int* top_5 = find_top_5(list_of_firms, number_of_firms, month);
 	printf("Топ-5 фирм с самыми большими непогашенными налогами в %s:\n", month);
@@ -511,17 +516,17 @@ void output_top_5(firm_info* list_of_firms, int number_of_firms, const char* mon
 	printf("+-------------------------------------------------------------------------+\n");
 	for (int i = 0; i < 5; i++) 
 	{
-		printf("| %d | %s | %s | %s  | %s |\n", i, list_of_firms[top_5[i]].name, list_of_firms[top_5[i]].taxes, list_of_firms[top_5[i]].taxes_deadline, list_of_firms[top_5[i]].taxes_payed);
+		printf("| %d | %s | %s | %s  | %s |\n", i, (*(list_of_firms + *(top_5 + i))).name, (*(list_of_firms + *(top_5 + i))).taxes, (*(list_of_firms + *(top_5 + i))).taxes_deadline, (*(list_of_firms + *(top_5 + i))).taxes_payed);
 		printf("+-------------------------------------------------------------------------+\n");
 	}
 }
 
 //* ======================== Restart ========================
-void restart_program(int* flag)																						    // функция перезапуска программы
+void restart_program(int* flag)																				    // функция перезапуска программы
 {
 	printf("\nДля завершения работы программы введите \033[1;32m0\033[0m, иначе перезапуск программы.\n");	    // запрос на перезапуск программы 
 	scanf("%d", flag);																							// ввод значения флага цикла программы
-	if (*flag != 0)																										// проверка значения флага
+	if (*flag != 0)																								// проверка значения флага
 		printf("Перезапуск программы...\n");																	// вывод сообщения о перезапуске программы
 	else
 		printf("Завершение работы...\n");																		// вывод сообщения о завершении работы программы

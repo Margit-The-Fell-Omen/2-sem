@@ -4,29 +4,29 @@
 int main()
 {
     setlocale(LC_ALL, "");
-    int number_of_firms;
-    int flag = 1;
-    firm_info* list_of_firms;
-    while (flag)
+    int number_of_firms;									// количество фирм
+    int flag = 1;											// флаг главного цикла программы
+    firm_info* list_of_firms;								// объявление массива структур
+    while (flag)                                            // главный цикл программы
     {
-        input_int_var(&number_of_firms, 1, 0, 0);
+        input_int_var(&number_of_firms, 1, 0, 0);           // функция ввода целого числа
 
-        list_of_firms = firm_info_alloc(number_of_firms);
+        list_of_firms = firm_info_alloc(number_of_firms);	// функция выделения памяти для структуры
 
-        input_firm_name(list_of_firms, number_of_firms);
-        output_firm_info(list_of_firms, number_of_firms, 1);
+        input_firm_name(list_of_firms, number_of_firms);	// функция ввода названия фирмы
+        output_firm_info(list_of_firms, number_of_firms, 1);// функция вывода данных о фирмах
 
-        input_firm_taxes(list_of_firms, number_of_firms);
-        output_firm_info(list_of_firms, number_of_firms, 2);
+        input_firm_taxes(list_of_firms, number_of_firms);	// функция ввода налогов
+        output_firm_info(list_of_firms, number_of_firms, 2);// функция вывода данных о фирмах
 
-        input_firm_dates(list_of_firms, number_of_firms);
-        output_firm_info(list_of_firms, number_of_firms, 3);
+        input_firm_dates(list_of_firms, number_of_firms);	// функция ввода дат дедлайна и оплаты налогов
+        output_firm_info(list_of_firms, number_of_firms, 3);// функция вывода данных о фирмах
 
-        const char* month = input_month();
-        output_top_5(list_of_firms, number_of_firms, month);
+        const char* month = input_month();					// функция ввода месяца
+        output_top_5(list_of_firms, number_of_firms, month);// функция вывода топ-5 фирм по налогам
 
-        firm_info_free(list_of_firms);
-        restart_program(&flag);
+        firm_info_free(list_of_firms);						// функция освобождения памяти структуры
+        restart_program(&flag);								// функция перезапуска программы
     }
     return 0;
 }

@@ -4,7 +4,7 @@
 //* ==================== максимальные размеры полей структуры firm_info
 #define MAX_NAME_SIZE 62
 #define MAX_TAX_SIZE 9
-#define MAX_DATE_SIZE 22
+#define MAX_DATE_SIZE 32
 
 //*  =================== информация о фирме =================== 
 typedef struct Firm_info 
