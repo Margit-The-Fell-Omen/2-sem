@@ -1,4 +1,4 @@
-# Install script for directory: /home/tim/sem-2/Laba_1_10
+# Install script for directory: /home/tim/2-sem/Laba_1_10
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -50,5 +50,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/tim/sem-2/Laba_1_10/build/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/tim/2-sem/Laba_1_10/build/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

@@ -29,7 +29,7 @@ int is_numeric(const char* str)                     // функция прове
 
 int is_valid_num(const char* str)                   // функция проверки числа
 {
-    int num = atoi(str);						// перевод в int
+    int num = atoi(str);						    // перевод в int
     if (num > 1000000 || num < 0) return 0;
     return 1;
 }
@@ -39,13 +39,13 @@ int str_compare(const char* str1, const char* str2)	// функция сравн
     int len1 = strlen(str1);
     int len2 = strlen(str2);
     
-    if (len1 != len2)
+    if (len1 != len2)                               // сравнение длин строк
     {
         return 0;
     } 
-    for (int i = 0; i < len1; i++) 
+    for (int i = 0; i < len1; i++)                  // цикл по символам строк
     {
-        if (*(str1 + i) != *(str2 + i)) 
+        if (*(str1 + i) != *(str2 + i))             // сравнение символов строк
         {
             return 0;
         }
@@ -109,30 +109,46 @@ int* find_top_5(firm_info* list_of_firms, int number_of_firms, const char* month
     int* top_5 = (int*)calloc(5, sizeof(int));												// массив индексов топ-5 фирм
     int count = 0;																			// счётчик для прохода по top_5
 
-    for (int i = 0; i < number_of_firms; i++)												// gреобразование налогов в целые числа
+    for (int i = 0; i < number_of_firms; i++)												// преобразование налогов в целые числа
 	{
         *(list_of_taxes + i) = atoi((*(list_of_firms + i)).taxes);
     }
-// TODO quick sort
+
     qsort(list_of_taxes, number_of_firms, sizeof(int), compare);							// сортировка налогов по убыванию
 
-    // Находим топ-5 фирм с наибольшими налогами, которые ещё не заплачены
     for (int i = 0; i < number_of_firms && count < 5; i++)									// цикл по фирмам пока не найден топ-5
 	{
         for (int j = 0; j < number_of_firms; j++) 											// цикл по фирмам
 		{
-            if (*(list_of_taxes + i) == atoi((*(list_of_firms + j)).taxes) &&							// сравнение налога фирмы из топ-5 налогов и проверка оплаты 
+            if (*(list_of_taxes + i) == atoi((*(list_of_firms + j)).taxes) &&				// сравнение налога фирмы из топ-5 налогов и проверка оплаты 
                 what_month((*(list_of_firms + j)).taxes_payed) < what_month(month)) 
 			{
-                *(top_5 + count) = j;															// запись индекса топ-5 фирмы в top_5
+                *(top_5 + count) = j;														// запись индекса топ-5 фирмы в top_5
                 count++;
                 break;
             }
         }
     }
-
+    sort_top_5_by_name(list_of_firms, top_5);
     free(list_of_taxes);
     return top_5;
+}
+
+void sort_top_5_by_name(firm_info* list_of_firms, int* top_5)                               // функция сортировки в алфавитном порядке
+{
+    for (int i = 0; i < 4; i++)                                                             // сортировка пузырьком
+    {
+        for (int j = 0; j < 4 - i; j++) 
+        {
+            if (strcmp(list_of_firms[top_5[j]].name, list_of_firms[top_5[j + 1]].name) > 0) // сравнение строк
+            {
+                // Обмен индексов в top_5
+                int temp = top_5[j];
+                top_5[j] = top_5[j + 1];
+                top_5[j + 1] = temp;
+            }
+        }
+    }
 }
 //* ======================== INPUT ========================
 void input_int_var(int* a, int t, int min, int max)											// функция ввода и проверки целых чисел
@@ -447,13 +463,13 @@ void input_firm_dates(firm_info* list_of_firms, int number_of_firms)            
 
             if (char_count == 0)                                                    // проверка на пустую строку
             {
-                printf("\033[1;31mДата не может быть пустой. Попробуйте ещё раз.\033[0m\n");
+                printf("\033[1;31m Дата не может быть пустой. Попробуйте ещё раз.\033[0m\n");
                 continue;
             }
 
             if (char_count > 10)                                                    // проверка на слишком длинную строку
             {
-                printf("\033[1;31mВведено слишком много символов. Пожалуйста, введите дату в формате месяц (не более 10 символов).\033[0m\n");
+                printf("\033[1;31m Введено слишком много символов. Пожалуйста, введите дату в формате месяц (не более 10 символов).\033[0m\n");
                 continue;
             }
 			else if (date_len >= 21)
@@ -461,7 +477,7 @@ void input_firm_dates(firm_info* list_of_firms, int number_of_firms)            
 
             if (!is_valid_date(date))                                               // проверка на правильный формат даты
             {
-                printf("\033[1;31mВведено некорректное название месяца или 0. Пожалуйста, повторите ввод.\033[0m\n");
+                printf("\033[1;31m Введено некорректное название месяца или 0. Пожалуйста, повторите ввод.\033[0m\n");
                 continue;
             }
             

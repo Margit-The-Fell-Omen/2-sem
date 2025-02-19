@@ -1,12 +1,12 @@
 #include "header.h"
-#include <locale.h>
 
 int main()
 {
-    setlocale(LC_ALL, "");
     int number_of_firms;									// количество фирм
     int flag = 1;											// флаг главного цикла программы
     firm_info* list_of_firms;								// объявление массива структур
+    const char* month;                                      // название месяца
+
     while (flag)                                            // главный цикл программы
     {
         input_int_var(&number_of_firms, 1, 0, 0);           // функция ввода целого числа
@@ -22,7 +22,7 @@ int main()
         input_firm_dates(list_of_firms, number_of_firms);	// функция ввода дат дедлайна и оплаты налогов
         output_firm_info(list_of_firms, number_of_firms, 3);// функция вывода данных о фирмах
 
-        const char* month = input_month();					// функция ввода месяца
+        month = input_month();					            // функция ввода месяца
         output_top_5(list_of_firms, number_of_firms, month);// функция вывода топ-5 фирм по налогам
 
         firm_info_free(list_of_firms);						// функция освобождения памяти структуры

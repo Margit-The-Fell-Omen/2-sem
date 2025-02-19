@@ -8,7 +8,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/home/tim/sem-2/Laba_1_10/functions.c" "CMakeFiles/functions.dir/functions.c.o" "gcc" "CMakeFiles/functions.dir/functions.c.o.d"
+  "/home/tim/2-sem/Laba_1_10/functions.c" "CMakeFiles/functions.dir/functions.c.o" "gcc" "CMakeFiles/functions.dir/functions.c.o.d"
   )
 
 # Targets to which this target links which contain Fortran sources.

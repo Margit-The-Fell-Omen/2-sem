@@ -1,7 +1,7 @@
 #ifndef MY_HEADER
 #define MY_HEADER
 
-//* ==================== максимальные размеры полей структуры firm_info
+//* ==================== максимальные размеры полей структуры firm_info ====================
 #define MAX_NAME_SIZE 62
 #define MAX_TAX_SIZE 9
 #define MAX_DATE_SIZE 32
@@ -29,6 +29,7 @@ int is_valid_date(const char* str);                                             
 int compare(const void* a, const void* b);                                          // функция сравнения
 int what_month(const char* str);                                                    // функция определения порядкогого номера месяца
 int* find_top_5(firm_info* list_of_firms, int number_of_firms, const char* month);  // функция нахождения топ-5 фирм по налогам
+void sort_top_5_by_name(firm_info* list_of_firms, int* top_5);                      // функция сортировки в алфавитном порядке
 
 //* ==================== INPUT =================== 
 void input_int_var(int* a, int t, int min, int max)	;                               // функция ввода целого числа
