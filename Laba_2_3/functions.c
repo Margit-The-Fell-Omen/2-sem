@@ -1,11 +1,10 @@
-#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "header.h"
 
 //* ======================== Memory ===========================
-Full_name* students_alloc(int number_of_students)   // функция выделения памяти для структуры
+Full_name* students_alloc(int number_of_students)   						// функция выделения памяти для структуры
 {
 	Full_name* student = (Full_name*)malloc(number_of_students * sizeof(Full_name));
 	return student;
@@ -17,88 +16,26 @@ Student_with_family* students_with_families_alloc(int number_of_students)   // �
 	return student;
 }
 
-void students_free(Full_name* students)                                        // функция освобождения памяти структуры
+void students_free(Full_name* students)                                   	// функция освобождения памяти структуры
 {
 	free(students);
 	students = NULL;
 }
 
-void students_with_families_free(Student_with_family* students)                                        // функция освобождения памяти структуры
+void students_with_families_free(Student_with_family* students)       		// функция освобождения памяти структуры
 {
 	free(students);
 	students = NULL;
 }
-//* ======================== Checks ============================
-int is_numeric(const char* str)                     // функция проверки на бытиё числом
-{
-	while (*str)                                    // цикл по элементам строки
-	{
-		if (!isdigit(*str) && *str != '.' && *str != ',') return 0;
-		str++;
-	}
-	return 1;
-}
-
-int is_valid_num(const char* str)                   // функция проверки числа
-{
-	int num = atoi(str);						    // перевод в int
-	if (num > 1000000 || num < 0) return 0;
-	return 1;
-}
-
-int str_compare(const char* str1, const char* str2)	// функция сравнения строк
-{
-	int len1 = strlen(str1);
-	int len2 = strlen(str2);
-	
-	if (len1 != len2)                               // сравнение длин строк
-	{
-		return 0;
-	} 
-	for (int i = 0; i < len1; i++)                  // цикл по символам строк
-	{
-		if (*(str1 + i) != *(str2 + i))             // сравнение символов строк
-		{
-			return 0;
-		}
-	}
-	return 1;
-}
-
-int is_valid_date(const char* str)					// функция проверки даты
-{
-	const char* en_months[13] = 					// английские месяцы
-	{
-		"0", "January", "February", "March", "April", "May", "June",
-		"July", "August", "September", "October", "November", "December"
-	};
-
-	const char* ru_months[12] = 					// русские месяцы
-	{ 
-		"Январь", "Февраль", "Март", "Апрель", "Май", "Июнь",
-		"Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декобрь" 
-	};
-
-	int count = 0;									// счётчик совпадений
-
-	for (int i = 0; i < 13; i++)					// цикл по месяцам
-	{
-		if (str_compare((*(en_months + i)), str) || str_compare(str, (*(ru_months + i)))) count++;
-	}
-
-	if (count) return 1;
-	return 0;
-}
-//* ======================== TOP-5 ========================
 
 //* ======================== INPUT ========================
-void input_int_var(int* a, int t, int min, int max)											// функция ввода и проверки целых чисел
+void input_int_var(int* a, int t, int min, int max)							// функция ввода и проверки целых чисел
 {
 	int check = 0;
 	int c;
-	while (check != 1)	                                									// цикл ввода и проверки
+	while (check != 1)	                                					// цикл ввода и проверки
 	{
-		switch (t)																			// вывод сообщений с описанием вводимой величины
+		switch (t)															// вывод сообщений с описанием вводимой величины
 		{
 		case 1:
 			printf("Введите количество студентов(целое положительное десятичное число): \n");
@@ -110,8 +47,8 @@ void input_int_var(int* a, int t, int min, int max)											// функция 
 			printf("Выберите состав семьи:\n\t1. отец, мать, брат\n\t2. отец, мать, сестра, брат\n\t3. отец, мать, сестра\n (1-3): \n");
 			break;
 		}
-		check = scanf("%d", a);								                                                	// ввод значения
-		if (check != 1)														                                    // проверка правильности типа введённого значения
+		check = scanf("%d", a);								   		// ввод значения
+		if (check != 1)														// проверка правильности типа введённого значения
 			printf("\033[1;31m Ошибка ввода: не целое десятичное число, попробуйте ввести еще раз.\033[0m\n");  // вывод сообщения об ошибке
 		else if (*a <= 0)
 		{
@@ -131,11 +68,11 @@ void input_int_var(int* a, int t, int min, int max)											// функция 
 				check--;
 			}
 		}
-		while ((c = getchar()) != '\n' && c != EOF);															// очистка буфера ввода
+		while ((c = getchar()) != '\n' && c != EOF);						// очистка буфера ввода
 	}
 }
 
-void input_students_names(Full_name* students, int number_of_students)
+void input_students_names(Full_name* students, int number_of_students)		//
 {
 	for (int i = 0; i < number_of_students; i++)
 	{
@@ -326,106 +263,128 @@ void output_student_full_name(Full_name* students, int number_of_students)      
 	}
 }
 
+void output_1(Student_with_family* students, int number_of_students, int family_choise)
+{
+	printf("Данные о студентах:\n");
+	printf("+---------------------------------------------------------------------------------------------------+\n");
+	printf("| № |             Имя                |            Фамилия             |          Отчество           |\n");
+	printf("+---------------------------------------------------------------------------------------------------+\n");
+	for (int i = 0; i < number_of_students; i++) 
+	{
+		printf("| %d | %s | %s | %s |\n", i, (*(students + i)).full_name.name, (*(students + i)).full_name.surname, (*(students + i)).full_name.patronymic);
+		printf("+----------------------------------------------------------------------------------------------------+\n");
+	}
+}
+
+void output_2(Student_with_family* students, int number_of_students, int family_choise)
+{
+	printf("Данные о семьях студентов:\n");
+	printf("+----------------------------------------------------------------------------------------------------------------+\n");
+	printf("| № |             Имя                |            Фамилия             |          Отчество            | Член семьи |\n");
+	printf("+----------------------------------------------------------------------------------------------------------------+\n");
+	for (int i = 0; i < number_of_students; i++) 
+	{
+		switch (family_choise) 
+		{
+			case 1:
+			printf("| %d | %s | %s | %s | отец    |\n", i, (*(students + i)).family.optionA.father.name, (*(students + i)).family.optionA.father.surname, (*(students + i)).family.optionA.father.patronymic);
+			printf("+----------------------------------------------------------------------------------------------------------------+\n");
+			printf("| %d | %s | %s | %s | мать    |\n", i, (*(students + i)).family.optionA.mother.name, (*(students + i)).family.optionA.mother.surname, (*(students + i)).family.optionA.mother.patronymic);
+			printf("+----------------------------------------------------------------------------------------------------------------+\n");
+			printf("| %d | %s | %s | %s | брат    |\n", i, (*(students + i)).family.optionA.brother.name, (*(students + i)).family.optionA.brother.surname, (*(students + i)).family.optionA.brother.patronymic);
+			printf("+----------------------------------------------------------------------------------------------------------------+\n");
+			break;
+
+			case 2:
+			printf("| %d | %s | %s | %s | отец    |\n", i, (*(students + i)).family.optionB.father.name, (*(students + i)).family.optionB.father.surname, (*(students + i)).family.optionB.father.patronymic);
+			printf("+----------------------------------------------------------------------------------------------------------------+\n");
+			printf("| %d | %s | %s | %s | мать    |\n", i, (*(students + i)).family.optionB.mother.name, (*(students + i)).family.optionB.mother.surname, (*(students + i)).family.optionB.mother.patronymic);
+			printf("+----------------------------------------------------------------------------------------------------------------+\n");
+			printf("| %d | %s | %s | %s | брат    |\n", i, (*(students + i)).family.optionB.brother.name, (*(students + i)).family.optionB.brother.surname, (*(students + i)).family.optionB.brother.patronymic);
+			printf("+----------------------------------------------------------------------------------------------------------------+\n");
+			printf("| %d | %s | %s | %s | сестра  |\n", i, (*(students + i)).family.optionB.sister.name, (*(students + i)).family.optionB.sister.surname, (*(students + i)).family.optionB.sister.patronymic);
+			printf("+----------------------------------------------------------------------------------------------------------------+\n");
+			break;
+
+			case 3:
+			printf("| %d | %s | %s | %s | мать    |\n", i, (*(students + i)).family.optionC.mother.name, (*(students + i)).family.optionC.mother.surname, (*(students + i)).family.optionC.mother.patronymic);
+			printf("+----------------------------------------------------------------------------------------------------------------+\n");
+			printf("| %d | %s | %s | %s | сестра  |\n", i, (*(students + i)).family.optionC.sister.name, (*(students + i)).family.optionC.sister.surname, (*(students + i)).family.optionC.sister.patronymic);
+			printf("+----------------------------------------------------------------------------------------------------------------+\n");
+			printf("| %d | %s | %s | %s | брат    |\n", i, (*(students + i)).family.optionC.brother.name, (*(students + i)).family.optionC.brother.surname, (*(students + i)).family.optionC.brother.patronymic);
+			printf("+----------------------------------------------------------------------------------------------------------------+\n");
+			break;
+		}
+
+	}
+}
+
+void output_3(Student_with_family* students, int number_of_students, int family_choise)
+{
+	printf("Данные о студентах с семьями:\n");
+	printf("+----------------------------------------------------------------------------------------------------------------+\n");
+	printf("| № |             Имя               |            Фамилия             |          Отчество            | Член семьи |\n");
+	printf("+----------------------------------------------------------------------------------------------------------------+\n");
+	for (int i = 0; i < number_of_students; i++) 
+	{
+		printf("| %d | %s | %s | %s | студент |\n", i, (*(students + i)).full_name.name, (*(students + i)).full_name.surname, (*(students + i)).full_name.patronymic);
+		printf("+----------------------------------------------------------------------------------------------------------------+\n");
+		switch (family_choise) 
+		{
+			case 1:
+			printf("| %d | %s | %s | %s | отец    |\n", i, (*(students + i)).family.optionA.father.name, (*(students + i)).family.optionA.father.surname, (*(students + i)).family.optionA.father.patronymic);
+			printf("+----------------------------------------------------------------------------------------------------------------+\n");
+			printf("| %d | %s | %s | %s | мать    |\n", i, (*(students + i)).family.optionA.mother.name, (*(students + i)).family.optionA.mother.surname, (*(students + i)).family.optionA.mother.patronymic);
+			printf("+----------------------------------------------------------------------------------------------------------------+\n");
+			printf("| %d | %s | %s | %s | брат    |\n", i, (*(students + i)).family.optionA.brother.name, (*(students + i)).family.optionA.brother.surname, (*(students + i)).family.optionA.brother.patronymic);
+			printf("+----------------------------------------------------------------------------------------------------------------+\n");
+			break;
+
+			case 2:
+			printf("| %d | %s | %s | %s | отец    |\n", i, (*(students + i)).family.optionB.father.name, (*(students + i)).family.optionB.father.surname, (*(students + i)).family.optionB.father.patronymic);
+			printf("+----------------------------------------------------------------------------------------------------------------+\n");
+			printf("| %d | %s | %s | %s | мать    |\n", i, (*(students + i)).family.optionB.mother.name, (*(students + i)).family.optionB.mother.surname, (*(students + i)).family.optionB.mother.patronymic);
+			printf("+----------------------------------------------------------------------------------------------------------------+\n");
+			printf("| %d | %s | %s | %s | брат    |\n", i, (*(students + i)).family.optionB.brother.name, (*(students + i)).family.optionB.brother.surname, (*(students + i)).family.optionB.brother.patronymic);
+			printf("+----------------------------------------------------------------------------------------------------------------+\n");
+			printf("| %d | %s | %s | %s | сестра  |\n", i, (*(students + i)).family.optionB.sister.name, (*(students + i)).family.optionB.sister.surname, (*(students + i)).family.optionB.sister.patronymic);
+			printf("+----------------------------------------------------------------------------------------------------------------+\n");
+			break;
+
+			case 3:
+			printf("| %d | %s | %s | %s | мать    |\n", i, (*(students + i)).family.optionC.mother.name, (*(students + i)).family.optionC.mother.surname, (*(students + i)).family.optionC.mother.patronymic);
+			printf("+----------------------------------------------------------------------------------------------------------------+\n");
+			printf("| %d | %s | %s | %s | сестра  |\n", i, (*(students + i)).family.optionC.sister.name, (*(students + i)).family.optionC.sister.surname, (*(students + i)).family.optionC.sister.patronymic);
+			printf("+----------------------------------------------------------------------------------------------------------------+\n");
+			printf("| %d | %s | %s | %s | брат    |\n", i, (*(students + i)).family.optionC.brother.name, (*(students + i)).family.optionC.brother.surname, (*(students + i)).family.optionC.brother.patronymic);
+			printf("+----------------------------------------------------------------------------------------------------------------+\n");
+			break;
+		}
+
+	}
+}
+
 void output_student_with_family(Student_with_family* students, int number_of_students, int family_choise, int function_choice)
 {
 	switch (function_choice) 
 	{
 		case 1:
-		printf("Данные о студентах:\n");
-		printf("+---------------------------------------------------------------------------------------------------+\n");
-		printf("| № |             Имя                |            Фамилия             |          Отчество           |\n");
-		printf("+---------------------------------------------------------------------------------------------------+\n");
-		for (int i = 0; i < number_of_students; i++) 
-		{
-			printf("| %d | %s | %s | %s |\n", i, (*(students + i)).full_name.name, (*(students + i)).full_name.surname, (*(students + i)).full_name.patronymic);
-			printf("+----------------------------------------------------------------------------------------------------+\n");
-		}
+		students->output_1 = output_1;
+		students->output_1(students, number_of_students, family_choise);
+
 		break;
+
 		case 2:
-		printf("Данные о семьях студентов:\n");
-		printf("+----------------------------------------------------------------------------------------------------------------+\n");
-		printf("| № |             Имя                |            Фамилия             |          Отчество            | Член семьи |\n");
-		printf("+----------------------------------------------------------------------------------------------------------------+\n");
-		for (int i = 0; i < number_of_students; i++) 
-		{
-			switch (family_choise) 
-			{
-				case 1:
-				printf("| %d | %s | %s | %s | отец |\n", i, (*(students + i)).family.optionA.father.name, (*(students + i)).family.optionA.father.surname, (*(students + i)).family.optionA.father.patronymic);
-				printf("+----------------------------------------------------------------------------------------------------------------+\n");
-				printf("| %d | %s | %s | %s | мать |\n", i, (*(students + i)).family.optionA.mother.name, (*(students + i)).family.optionA.mother.surname, (*(students + i)).family.optionA.mother.patronymic);
-				printf("+----------------------------------------------------------------------------------------------------------------+\n");
-				printf("| %d | %s | %s | %s | брат |\n", i, (*(students + i)).family.optionA.brother.name, (*(students + i)).family.optionA.brother.surname, (*(students + i)).family.optionA.brother.patronymic);
-				printf("+----------------------------------------------------------------------------------------------------------------+\n");
-				break;
+		students->output_2 = output_2;
+		students->output_2(students, number_of_students, family_choise);
 
-				case 2:
-				printf("| %d | %s | %s | %s | отец |\n", i, (*(students + i)).family.optionB.father.name, (*(students + i)).family.optionB.father.surname, (*(students + i)).family.optionB.father.patronymic);
-				printf("+----------------------------------------------------------------------------------------------------------------+\n");
-				printf("| %d | %s | %s | %s | мать |\n", i, (*(students + i)).family.optionB.mother.name, (*(students + i)).family.optionB.mother.surname, (*(students + i)).family.optionB.mother.patronymic);
-				printf("+----------------------------------------------------------------------------------------------------------------+\n");
-				printf("| %d | %s | %s | %s | брат |\n", i, (*(students + i)).family.optionB.brother.name, (*(students + i)).family.optionB.brother.surname, (*(students + i)).family.optionB.brother.patronymic);
-				printf("+----------------------------------------------------------------------------------------------------------------+\n");
-				printf("| %d | %s | %s | %s | сестра |\n", i, (*(students + i)).family.optionB.sister.name, (*(students + i)).family.optionB.sister.surname, (*(students + i)).family.optionB.sister.patronymic);
-				printf("+----------------------------------------------------------------------------------------------------------------+\n");
-				break;
-
-				case 3:
-				printf("| %d | %s | %s | %s | мать |\n", i, (*(students + i)).family.optionC.mother.name, (*(students + i)).family.optionC.mother.surname, (*(students + i)).family.optionC.mother.patronymic);
-				printf("+----------------------------------------------------------------------------------------------------------------+\n");
-				printf("| %d | %s | %s | %s | сестра |\n", i, (*(students + i)).family.optionC.sister.name, (*(students + i)).family.optionC.sister.surname, (*(students + i)).family.optionC.sister.patronymic);
-				printf("+----------------------------------------------------------------------------------------------------------------+\n");
-				printf("| %d | %s | %s | %s | брат |\n", i, (*(students + i)).family.optionC.brother.name, (*(students + i)).family.optionC.brother.surname, (*(students + i)).family.optionC.brother.patronymic);
-				printf("+----------------------------------------------------------------------------------------------------------------+\n");
-				break;
-			}
-
-		}
 		break;
+
 		case 3:
-		printf("Данные о студентах с семьями:\n");
-		printf("+----------------------------------------------------------------------------------------------------------------+\n");
-		printf("| № |             Имя               |            Фамилия             |          Отчество            | Член семьи |\n");
-		printf("+----------------------------------------------------------------------------------------------------------------+\n");
-		for (int i = 0; i < number_of_students; i++) 
-		{
-			printf("| %d | %s | %s | %s | студент |\n", i, (*(students + i)).full_name.name, (*(students + i)).full_name.surname, (*(students + i)).full_name.patronymic);
-			printf("+----------------------------------------------------------------------------------------------------------------+\n");
-			switch (family_choise) 
-			{
-				case 1:
-				printf("| %d | %s | %s | %s | отец |\n", i, (*(students + i)).family.optionA.father.name, (*(students + i)).family.optionA.father.surname, (*(students + i)).family.optionA.father.patronymic);
-				printf("+----------------------------------------------------------------------------------------------------------------+\n");
-				printf("| %d | %s | %s | %s | мать |\n", i, (*(students + i)).family.optionA.mother.name, (*(students + i)).family.optionA.mother.surname, (*(students + i)).family.optionA.mother.patronymic);
-				printf("+----------------------------------------------------------------------------------------------------------------+\n");
-				printf("| %d | %s | %s | %s | брат |\n", i, (*(students + i)).family.optionA.brother.name, (*(students + i)).family.optionA.brother.surname, (*(students + i)).family.optionA.brother.patronymic);
-				printf("+----------------------------------------------------------------------------------------------------------------+\n");
-				break;
-
-				case 2:
-				printf("| %d | %s | %s | %s | отец |\n", i, (*(students + i)).family.optionB.father.name, (*(students + i)).family.optionB.father.surname, (*(students + i)).family.optionB.father.patronymic);
-				printf("+----------------------------------------------------------------------------------------------------------------+\n");
-				printf("| %d | %s | %s | %s | мать |\n", i, (*(students + i)).family.optionB.mother.name, (*(students + i)).family.optionB.mother.surname, (*(students + i)).family.optionB.mother.patronymic);
-				printf("+----------------------------------------------------------------------------------------------------------------+\n");
-				printf("| %d | %s | %s | %s | брат |\n", i, (*(students + i)).family.optionB.brother.name, (*(students + i)).family.optionB.brother.surname, (*(students + i)).family.optionB.brother.patronymic);
-				printf("+----------------------------------------------------------------------------------------------------------------+\n");
-				printf("| %d | %s | %s | %s | сестра |\n", i, (*(students + i)).family.optionB.sister.name, (*(students + i)).family.optionB.sister.surname, (*(students + i)).family.optionB.sister.patronymic);
-				printf("+----------------------------------------------------------------------------------------------------------------+\n");
-				break;
-
-				case 3:
-				printf("| %d | %s | %s | %s | мать |\n", i, (*(students + i)).family.optionC.mother.name, (*(students + i)).family.optionC.mother.surname, (*(students + i)).family.optionC.mother.patronymic);
-				printf("+----------------------------------------------------------------------------------------------------------------+\n");
-				printf("| %d | %s | %s | %s | сестра |\n", i, (*(students + i)).family.optionC.sister.name, (*(students + i)).family.optionC.sister.surname, (*(students + i)).family.optionC.sister.patronymic);
-				printf("+----------------------------------------------------------------------------------------------------------------+\n");
-				printf("| %d | %s | %s | %s | брат |\n", i, (*(students + i)).family.optionC.brother.name, (*(students + i)).family.optionC.brother.surname, (*(students + i)).family.optionC.brother.patronymic);
-				printf("+----------------------------------------------------------------------------------------------------------------+\n");
-				break;
-			}
-
-		}
+		students->output_3 = output_3;
+		students->output_3(students, number_of_students, family_choise);
 		break;
-		}
+	}
 }
 
 //* ======================== Restart ========================
