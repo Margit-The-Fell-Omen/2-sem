@@ -1,4 +1,4 @@
-/home/tim/2-sem/Laba_2_3/build/CMakeFiles/functions.dir
-/home/tim/2-sem/Laba_2_3/build/CMakeFiles/Laba_1_10.dir
-/home/tim/2-sem/Laba_2_3/build/CMakeFiles/edit_cache.dir
-/home/tim/2-sem/Laba_2_3/build/CMakeFiles/rebuild_cache.dir
+/home/tim/sem-2/Laba_2_3/build/CMakeFiles/functions.dir
+/home/tim/sem-2/Laba_2_3/build/CMakeFiles/Laba_1_10.dir
+/home/tim/sem-2/Laba_2_3/build/CMakeFiles/edit_cache.dir
+/home/tim/sem-2/Laba_2_3/build/CMakeFiles/rebuild_cache.dir

@@ -55,7 +55,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "/home/tim/2-sem/Laba_2_3/build"
+			"value" : "/home/tim/sem-2/Laba_2_3/build"
 		},
 		{
 			"name" : "CMAKE_CACHE_MAJOR_VERSION",
@@ -543,7 +543,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "/home/tim/2-sem/Laba_2_3/build/CMakeFiles/pkgRedirects"
+			"value" : "/home/tim/sem-2/Laba_2_3/build/CMakeFiles/pkgRedirects"
 		},
 		{
 			"name" : "CMAKE_GENERATOR",
@@ -603,7 +603,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "/home/tim/2-sem/Laba_2_3"
+			"value" : "/home/tim/sem-2/Laba_2_3"
 		},
 		{
 			"name" : "CMAKE_INSTALL_PREFIX",
@@ -1155,7 +1155,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "/home/tim/2-sem/Laba_2_3/build"
+			"value" : "/home/tim/sem-2/Laba_2_3/build"
 		},
 		{
 			"name" : "Laba_1_10_IS_TOP_LEVEL",
@@ -1179,7 +1179,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "/home/tim/2-sem/Laba_2_3"
+			"value" : "/home/tim/sem-2/Laba_2_3"
 		},
 		{
 			"name" : "_CMAKE_LINKER_PUSHPOP_STATE_SUPPORTED",

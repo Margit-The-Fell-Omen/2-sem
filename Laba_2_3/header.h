@@ -2,47 +2,47 @@
 #define MY_HEADER
 
 //* ==================== максимальные размеры полей структуры ====================
-#define MAX_NAME_SIZE 62
+#define MAX_NAME_SIZE 62            // максимальная длина имени/фамилии/отчества
 
 //*  =================== STRUCT & UNION =================== 
-typedef struct                      //
+typedef struct                      // структура ФИО
 {
-    char name[MAX_NAME_SIZE];       //
-    char surname[MAX_NAME_SIZE];    //
-    char patronymic[MAX_NAME_SIZE]; //
+    char name[MAX_NAME_SIZE];       // имя
+    char surname[MAX_NAME_SIZE];    // фамилия
+    char patronymic[MAX_NAME_SIZE]; // отчество
 } Full_name;
 
-typedef union                       //
+typedef union                       // объединение семья
 {
-    struct                          //
+    struct                          // а)
     {
-        Full_name father;           //
-        Full_name mother;           //
-        Full_name brother;          //
+        Full_name father;           // ФИО отца
+        Full_name mother;           // ФИО матери
+        Full_name brother;          // ФИО брата
     } optionA;
-    struct 
+    struct                          // б)
     {
-        Full_name father;           //
-        Full_name mother;           //
-        Full_name brother;          //
-        Full_name sister;           //
+        Full_name father;           // ФИО отца
+        Full_name mother;           // ФИО матери
+        Full_name brother;          // ФИО брата
+        Full_name sister;           // ФИО сестры
     } optionB;
-    struct 
+    struct                          // в)
     {
-        Full_name mother;           //
-        Full_name brother;          //
-        Full_name sister;           //
+        Full_name mother;           // ФИО матери
+        Full_name brother;          // ФИО брата
+        Full_name sister;           // ФИО сестры
     } optionC;
 } FamilyUnion;
 
-typedef struct Student_with_family                                                                      //
+typedef struct Student_with_family                                                                      // структура стедент с семьёй
 {
-    Full_name full_name;                                                                                //
-    FamilyUnion family;                                                                                 //
+    Full_name full_name;                                                                                // ФИО студента
+    FamilyUnion family;                                                                                 // семья студента
 
-    void (*output_1)(struct Student_with_family* students, int number_of_students, int family_choise);  //
-    void (*output_2)(struct Student_with_family* students, int number_of_students, int family_choise);  //
-    void (*output_3)(struct Student_with_family* students, int number_of_students, int family_choise);  //
+    void (*output_1)(struct Student_with_family* students, int number_of_students, int family_choise);  // указатель на функцию вывода ФИО студента с семьёй
+    void (*output_2)(struct Student_with_family* students, int number_of_students, int family_choise);  // указатель на функцию вывода ФИО семьи
+    void (*output_3)(struct Student_with_family* students, int number_of_students, int family_choise);  // указатель на функцию вывода ФИО студента и семьи
 } Student_with_family;
 
 //* ==================== MEMORY =================== 
@@ -54,17 +54,17 @@ void students_with_families_free(Student_with_family* students);                
 //* ==================== INPUT =================== 
 void input_int_var(int* a, int t, int min, int max);                                                                            // функция ввода целого числа
 
-void input_students_names(Full_name* students, int number_of_students);                                                         // 
-int input_students_with_families_names( Student_with_family* students, int number_of_students, int family_choice);              //
+void input_students_names(Full_name* students, int number_of_students);                                                         // функция ввода ФИО студентов без семей
+int input_students_with_families_names( Student_with_family* students, int number_of_students, int family_choice);              // ввод ФИО студентов с семьями
 
 void input_str(char* destination);				                                                                                // функция ввода строки
 
 //* ==================== OUTPUT =================== 
-void output_student_full_name(Full_name* students, int number_of_students);                                                     //
-void output_student_with_family(Student_with_family* students, int number_of_students, int family_choice, int function_choice); //
-void output_1(Student_with_family* students, int number_of_students, int family_choise);                                        //
-void output_2(Student_with_family* students, int number_of_students, int family_choise);                                        //
-void output_3(Student_with_family* students, int number_of_students, int family_choise);                                        //
+void output_student_full_name(Full_name* students, int number_of_students);                                                     // функция вывода ФИО студентов без семей
+void output_student_with_family(Student_with_family* students, int number_of_students, int family_choice, int function_choice); // функция вызова выбранной функции вывода
+void output_1(Student_with_family* students, int number_of_students, int family_choise);                                        // функция вывода ФИО студента с семьёй
+void output_2(Student_with_family* students, int number_of_students, int family_choise);                                        // функция вывода ФИО семьи
+void output_3(Student_with_family* students, int number_of_students, int family_choise);                                        // функция вывода ФИО студента и семьи
 
 //* ==================== RESTART =================== 
 void restart_program(int* flag);													                                            // функция перезапуска программы
