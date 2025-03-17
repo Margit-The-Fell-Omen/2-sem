@@ -1,17 +1,18 @@
 #include "header.h"
+#include <stdio.h>
 
 int main()
-{
-    int number_of_students;									                                                        // количество студентов
-    int struct_choise;									                                                            // выбор типа вводимых данных
-    int family_choise;									                                                            // выбор состава семьи
-    char str[MAX_NAME_SIZE];                                                                                                      // выбор функци вывода
+{							                                                            // выбор состава семьи
+    char str[MAX_SIZE];                                                                                                      // выбор функци вывода
     int flag = 1;											                                                        // флаг главного цикла программы
     Stack* stack = NULL;
+    Context ctx;
+    ctx.varList = NULL;
     while (flag)                                                                                                    // главный цикл программы
     {
         input_str(str);
-        check_brackets(str);
+        check_brackets(stack, str);
+        do_math(stack, str, &ctx);
         restart_program(&flag);								                                                        // функция перезапуска программы
     }
     return 0;
