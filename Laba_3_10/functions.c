@@ -60,6 +60,17 @@ int peek(Stack* stack)
     return 404;
 }
 
+void display_stack(Stack* stack)
+{
+    printf("Stack:\n");
+    while (stack != NULL)
+    {
+        printf("%c", stack->data);
+        stack = stack->next;
+    }
+    printf("\n");
+}
+
 //* ======================== MATH ========================
 void check_brackets(Stack* stack, char* str)
 {
@@ -88,7 +99,6 @@ void check_brackets(Stack* stack, char* str)
 			else
 			{
 				printf("Syntax mistake on the %d character: %c!\n", i, peek(stack));
-                while(stack) pop(&stack);
 				error_flag = 1;
 			}
 			break;
@@ -101,7 +111,6 @@ void check_brackets(Stack* stack, char* str)
 			else
 			{
 				printf("Syntax mistake on the %d character: %c!\n", i, peek(stack));
-                while(stack) pop(&stack);
 				error_flag = 1;
 			}
 			break;
@@ -114,40 +123,45 @@ void check_brackets(Stack* stack, char* str)
 			else
 			{
 				printf("Syntax mistake on the %d character: %c!\n", i, peek(stack));
-                while(stack) pop(&stack);
 				error_flag = 1;
 			}
 			break;
 		}
 	}
-	display_stack(stack);
-	if (isEmpty(stack))
+	if (isEmpty(stack) && !error_flag)
 	{
 		printf("All good!");
-	}
+	}   
+    else 
+    {
+        printf("Syntax mistake: not closed bracket");
+        while(stack) pop(&stack);
+    }
 	
 }
 
-
-//TODO MATH with simplification
-//TODO поддержка систем уравнений
 void skipSpaces(const char **s) 
 {
     while (isspace(**s)) (*s)++;
 }
 
-Linear parseLinearFactor(const char **s, const char *unknownVar) {
+Linear parseLinearFactor(const char **s, const char *unknownVar) 
+{
     skipSpaces(s);
     Linear result = {0, 0};
 
     // Если встретилась открывающая скобка
-    if (**s == '(') {
+    if (**s == '(' || **s == '[' || **s == '{') 
+    {
         (*s)++;  // пропускаем '('
         result = parseLinearExpression(s, unknownVar);
         skipSpaces(s);
-        if (**s == ')') {
+        if (**s == ')' || **s == ']' || **s == '}') 
+        {
             (*s)++;  // пропускаем ')'
-        } else {
+        } 
+        else 
+        {
             printf("Ошибка: ожидалась ')'\n");
             exit(EXIT_FAILURE);
         }
@@ -155,19 +169,24 @@ Linear parseLinearFactor(const char **s, const char *unknownVar) {
         return result;
     }
     // Если начинается идентификатор
-    else if (isalpha(**s) || **s == '_') {
+    else if (isalpha(**s) || **s == '_') 
+    {
         char varName[64];
         int pos = 0;
-        while ((isalpha(**s) || **s == '_' || isdigit(**s)) && pos < 63) {
+        while ((isalpha(**s) || **s == '_' || isdigit(**s)) && pos < 63) 
+        {
             varName[pos++] = **s;
             (*s)++;
         }
         varName[pos] = '\0';
         // Если идентификатор совпадает с неизвестной переменной
-        if (strcmp(varName, unknownVar) == 0) {
+        if (strcmp(varName, unknownVar) == 0) 
+        {
             result.coef = 1;
             result.constant = 0;
-        } else {
+        } 
+        else 
+        {
             // Здесь можно генерировать ошибку, поскольку в данной реализации
             // разрешена только одна неизвестная переменная.
             fprintf(stderr, "Ошибка: неизвестный идентификатор \"%s\"\n", varName);
@@ -177,10 +196,12 @@ Linear parseLinearFactor(const char **s, const char *unknownVar) {
         return result;
     }
     // Иначе должно идти число
-    else {
+    else 
+    {
         char *end;
         double val = strtod(*s, &end);
-        if (s == &end) {
+        if (s == &end) 
+        {
             fprintf(stderr, "Ошибка разбора числа\n");
             exit(EXIT_FAILURE);
         }
@@ -192,17 +213,21 @@ Linear parseLinearFactor(const char **s, const char *unknownVar) {
     }
 }
 
-Linear parseLinearTerm(const char **s, const char *unknownVar) {
+Linear parseLinearTerm(const char **s, const char *unknownVar) 
+{
     Linear result = parseLinearFactor(s, unknownVar);
     skipSpaces(s);
-    while (**s == '*' || **s == '/') {
+    while (**s == '*' || **s == '/') 
+    {
         char op = **s;
         (*s)++; // пропускаем оператор
         Linear factor = parseLinearFactor(s, unknownVar);
-        if (op == '*') {
+        if (op == '*') 
+        {
             // При умножении (a*x+b) * (c*x+d) допускается только если хотя бы один
             // из множителей является чистой константой (то есть coef == 0)
-            if (result.coef != 0 && factor.coef != 0) {
+            if (result.coef != 0 && factor.coef != 0) 
+            {
                 fprintf(stderr, "Ошибка: выражение не является линейным (умножение двух зависимых от x выражений)\n");
                 exit(EXIT_FAILURE);
             }
@@ -211,8 +236,11 @@ Linear parseLinearTerm(const char **s, const char *unknownVar) {
             result.coef = newCoef;
             result.constant = newConstant;
             printf("[DEBUG][Линейный] Умножение: теперь %.2f*x + %.2f\n", result.coef, result.constant);
-        } else if (op == '/') {
-            if (fabs(factor.coef) > 1e-9) {
+        } 
+        else if (op == '/') 
+        {
+            if (fabs(factor.coef) > 1e-9) 
+            {
                 fprintf(stderr, "Ошибка: делитель должен быть константой в линейном выражении\n");
                 exit(EXIT_FAILURE);
             }
@@ -226,18 +254,23 @@ Linear parseLinearTerm(const char **s, const char *unknownVar) {
     return result;
 }
 
-Linear parseLinearExpression(const char **s, const char *unknownVar) {
+Linear parseLinearExpression(const char **s, const char *unknownVar) 
+{
     Linear result = parseLinearTerm(s, unknownVar);
     skipSpaces(s);
-    while (**s == '+' || **s == '-') {
+    while (**s == '+' || **s == '-') 
+    {
         char op = **s;
         (*s)++;  // пропускаем оператор
         Linear term = parseLinearTerm(s, unknownVar);
-        if (op == '+') {
+        if (op == '+') 
+        {
             result.coef += term.coef;
             result.constant += term.constant;
             printf("[DEBUG][Линейный] Сложение: теперь %.2f*x + %.2f\n", result.coef, result.constant);
-        } else {
+        } 
+        else 
+        {
             result.coef -= term.coef;
             result.constant -= term.constant;
             printf("[DEBUG][Линейный] Вычитание: теперь %.2f*x + %.2f\n", result.coef, result.constant);
@@ -252,17 +285,19 @@ Linear parseLinearExpression(const char **s, const char *unknownVar) {
    Вспомогательная функция для проверки, является ли строка простым именем
    переменной (содержащей только идентификатор).
 -------------------------------------------------------------------------- */
-int isSimpleVariable(const char *str) {
-    while (isspace(*str)) str++;
+int isSimpleVariable(const char *str) 
+{
+    skipSpaces(&str);
     if (*str == '\0')
         return 0;
     if (!(isalpha(*str) || *str == '_'))
         return 0;
     str++;
-    while (*str && (isalnum(*str) || *str == '_')) {
+    while (*str && (isalnum(*str) || *str == '_')) 
+    {
         str++;
     }
-    while (isspace(*str)) str++;
+    skipSpaces(&str);
     return (*str == '\0');
 }
 /* --------------------------------------------------------------------------
@@ -274,29 +309,37 @@ int isSimpleVariable(const char *str) {
    Если '=' нет, то выражение вычисляется и выводится либо как число (если
    коэффициент равен 0), либо в виде линейной комбинации.
 -------------------------------------------------------------------------- */
-void do_math(char *str) {
+void do_math(char *str) 
+{
     // 1. Проверяем баланс скобок с использованием стека.
     Stack *checkStack = NULL;
-    for (int i = 0; i < (int)strlen(str); i++) {
+    for (int i = 0; i < (int)strlen(str); i++) 
+    {
         char c = str[i];
-        if (c == '(') {
+        if (c == '(') 
+        {
             push(&checkStack, c);
-        } else if (c == ')') {
-            if (isEmpty(checkStack)) {
+        } 
+        else if (c == ')') 
+        {
+            if (isEmpty(checkStack)) 
+            {
                 printf("Синтаксическая ошибка в позиции %d: лишняя закрывающая скобка '%c'\n", i, c);
                 return;
             }
             pop(&checkStack);
         }
     }
-    if (!isEmpty(checkStack)) {
+    if (!isEmpty(checkStack)) 
+    {
         printf("Синтаксическая ошибка: не все скобки закрыты\n");
         return;
     }
 
     // 2. Если присутствует знак '=', обрабатываем уравнение.
     char *eq = strchr(str, '=');
-    if (eq != NULL) {
+    if (eq != NULL) 
+    {
         // Разбиваем строку на левую и правую части
         int lenPart = eq - str;
         char leftPart[256], rightPart[256];
@@ -305,29 +348,44 @@ void do_math(char *str) {
         strcpy(rightPart, eq + 1);
         
         // Убираем пробелы в начале и конце левой части
-        while(isspace(*leftPart)) memmove(leftPart, leftPart + 1, strlen(leftPart));
+        while(isspace(*leftPart)) 
+            memmove(leftPart, leftPart + 1, strlen(leftPart));
         char *end = leftPart + strlen(leftPart) - 1;
-        while(end >= leftPart && isspace(*end)) { *end = '\0'; end--; }
+        while(end >= leftPart && isspace(*end)) 
+        { 
+            *end = '\0'; 
+            end--; 
+        }
         // Аналогично для правой части
-        while(isspace(*rightPart)) memmove(rightPart, rightPart + 1, strlen(rightPart));
+        while(isspace(*rightPart)) 
+            memmove(rightPart, rightPart + 1, strlen(rightPart));
         end = rightPart + strlen(rightPart) - 1;
-        while(end >= rightPart && isspace(*end)) { *end = '\0'; end--; }
+        while(end >= rightPart && isspace(*end)) 
+        { 
+            *end = '\0'; 
+            end--; 
+        }
         
         // Определяем имя неизвестной переменной:
         // Если левая часть является простым идентификатором, то используем его.
         // Иначе, ищем первый встреченный идентификатор.
         char unknownVar[64] = {0};
-        if (isSimpleVariable(leftPart)) {
+        if (isSimpleVariable(leftPart)) 
+        {
             strcpy(unknownVar, leftPart);
-        } else {
+        } 
+        else 
+        {
             int i = 0;
             while (leftPart[i] && !isalpha(leftPart[i]) && leftPart[i] != '_') i++;
-            if (leftPart[i] == '\0') {
+            if (leftPart[i] == '\0') 
+            {
                 printf("Ошибка: не найден неизвестный идентификатор в левой части уравнения.\n");
                 return;
             }
             int pos = 0;
-            while (leftPart[i] && (isalnum(leftPart[i]) || leftPart[i]=='_') && pos < 63) {
+            while (leftPart[i] && (isalnum(leftPart[i]) || leftPart[i]=='_') && pos < 63) 
+            {
                 unknownVar[pos++] = leftPart[i];
                 i++;
             }
@@ -344,12 +402,16 @@ void do_math(char *str) {
         // => (leftLin.coef - rightLin.coef)*x = (rightLin.constant - leftLin.constant)
         double A = leftLin.coef - rightLin.coef;
         double B = rightLin.constant - leftLin.constant;
-        if (fabs(A) < 1e-9) {
+        if (fabs(A) < 1e-9) 
+        {
             if (fabs(B) < 1e-9)
                 printf("[DEBUG] Уравнение имеет бесконечное множество решений.\n");
             else
                 printf("[DEBUG] Уравнение не имеет решений.\n");
-        } else {
+        } 
+        else 
+        
+        {
             double solution = B / A;
             printf("[DEBUG] Решение уравнения: %s = %.2f\n", unknownVar, solution);
         }
@@ -464,18 +526,6 @@ void input_str(char* destination)										// функция ввода назв
 			strncpy(destination, buffer, MAX_SIZE);				// копирование буффера в поле структуры
 			valid = 1; 													// Ввод корректен, выход из цикла
 		}
-}
-
-//* ======================== OUTPUT ========================
-void display_stack(Stack* stack)
-{
-    printf("Stack:\n\t");
-    while (stack != NULL)
-    {
-        printf("%c", stack->data);
-        stack = stack->next;
-    }
-    printf("\n");
 }
 
 //* ======================== Restart ========================

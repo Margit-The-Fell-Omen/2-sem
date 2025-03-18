@@ -68,11 +68,21 @@ CMakeFiles/functions.dir/functions.c.o: /home/tim/2-sem/Laba_3_10/functions.c \
   /usr/include/x86_64-linux-gnu/sys/cdefs.h \
   /usr/include/x86_64-linux-gnu/sys/select.h \
   /usr/include/x86_64-linux-gnu/sys/types.h \
-  /usr/lib/gcc/x86_64-linux-gnu/13/include/stdarg.h \
-  /usr/lib/gcc/x86_64-linux-gnu/13/include/stddef.h
+  /usr/lib/llvm-18/lib/clang/18/include/__stdarg___gnuc_va_list.h \
+  /usr/lib/llvm-18/lib/clang/18/include/__stddef_null.h \
+  /usr/lib/llvm-18/lib/clang/18/include/__stddef_size_t.h \
+  /usr/lib/llvm-18/lib/clang/18/include/__stddef_wchar_t.h \
+  /usr/lib/llvm-18/lib/clang/18/include/stdarg.h \
+  /usr/lib/llvm-18/lib/clang/18/include/stddef.h
 
 
-/usr/lib/gcc/x86_64-linux-gnu/13/include/stddef.h:
+/usr/lib/llvm-18/lib/clang/18/include/stdarg.h:
+
+/usr/lib/llvm-18/lib/clang/18/include/__stddef_wchar_t.h:
+
+/usr/lib/llvm-18/lib/clang/18/include/__stddef_size_t.h:
+
+/usr/lib/llvm-18/lib/clang/18/include/__stddef_null.h:
 
 /usr/include/x86_64-linux-gnu/sys/types.h:
 
@@ -124,6 +134,8 @@ CMakeFiles/functions.dir/functions.c.o: /home/tim/2-sem/Laba_3_10/functions.c \
 
 /usr/include/stdlib.h:
 
+/usr/lib/llvm-18/lib/clang/18/include/stddef.h:
+
 /usr/include/x86_64-linux-gnu/bits/types/locale_t.h:
 
 /usr/include/features.h:
@@ -154,6 +166,8 @@ CMakeFiles/functions.dir/functions.c.o: /home/tim/2-sem/Laba_3_10/functions.c \
 
 /usr/include/x86_64-linux-gnu/bits/uintn-identity.h:
 
+/usr/lib/llvm-18/lib/clang/18/include/__stdarg___gnuc_va_list.h:
+
 /usr/include/x86_64-linux-gnu/bits/pthreadtypes.h:
 
 /usr/include/x86_64-linux-gnu/bits/select.h:
@@ -177,8 +191,6 @@ CMakeFiles/functions.dir/functions.c.o: /home/tim/2-sem/Laba_3_10/functions.c \
 /usr/include/endian.h:
 
 /usr/include/x86_64-linux-gnu/bits/types/timer_t.h:
-
-/usr/lib/gcc/x86_64-linux-gnu/13/include/stdarg.h:
 
 /usr/include/x86_64-linux-gnu/bits/struct_rwlock.h:
 

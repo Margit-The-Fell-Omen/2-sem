@@ -5,43 +5,40 @@
 #define MAX_SIZE 256            // максимальная длина имени/фамилии/отчества
 
 //*  =================== STRUCT =================== 
-typedef struct Stack 
+typedef struct Stack            // структура стека
 {
-    char data;
-    struct Stack* next;
+    char data;                  // поле данных элемента стека
+    struct Stack* next;         // указатель на следующий элемент стека
 } Stack;
 
-typedef struct {
-    double coef;      // коэффициент при неизвестной переменной
-    double constant;  // свободный член
+typedef struct                  // структура линейного выражения
+{
+    double coef;                // коэффициент при неизвестной переменной
+    double constant;            // свободный член
 } Linear;
 
-//* ==================== MEMORY =================== 
-Stack* createNode(char data);
-
 //* ==================== STACK =================== 
-int isEmpty(Stack* stack);
-void push(Stack** stack, char new_data);
-void pop(Stack** stack) ;
-int peek(Stack* stack);
+Stack* createNode(char data);               // функция создания элемента стека
+int isEmpty(Stack* stack);                  // функция проверки стека на пустоту
+void push(Stack** stack, char new_data);    // функция добавления элемента в стек
+void pop(Stack** stack) ;                   // функция удаления элемента из стека
+int peek(Stack* stack);                     // функция возвращения верхнего элемента стека
+void display_stack(Stack* stack);           // функция вывода элементов стека
 
 //* ==================== MATH =================== 
-Linear parseLinearFactor(const char **s, const char *unknownVar);
-Linear parseLinearTerm(const char **s, const char *unknownVar);
-Linear parseLinearExpression(const char **s, const char *unknownVar);
+Linear parseLinearFactor(const char **s, const char *unknownVar);       // функция вычисления линейного фактора
+Linear parseLinearTerm(const char **s, const char *unknownVar);         // функция вычисления линейного терма
+Linear parseLinearExpression(const char **s, const char *unknownVar);   // функция вычисления линейного выражения
 
-int isSimpleVariable(const char *str);
-void check_brackets(Stack* stack, char* destination);
-void do_math(char* str);
-void simplify(char* str, int open, int close);
+void skipSpaces(const char **s);                                        // функция пропуска пробелов в строке
+int isSimpleVariable(const char *str);                                  // функция проверки на простую переменную
+void check_brackets(Stack* stack, char* destination);                   // функция проверки синтаксиса скобок
+void do_math(char* str);                                                // функция вычисления линейного уравнения
 
 //* ==================== INPUT =================== 
-void input_int_var(int* a, int t, int min, int max);                                                                            // функция ввода целого числа
-void input_str(char* destination);				                                                                                // функция ввода строки
-
-//* ==================== OUTPUT =================== 
-void display_stack(Stack* stack);
+void input_int_var(int* a, int t, int min, int max);                    // функция ввода целого числа
+void input_str(char* destination);				                        // функция ввода строки
 
 //* ==================== RESTART =================== 
-void restart_program(int* flag);													                                            // функция перезапуска программы
+void restart_program(int* flag);		                                // функция перезапуска программы
 #endif

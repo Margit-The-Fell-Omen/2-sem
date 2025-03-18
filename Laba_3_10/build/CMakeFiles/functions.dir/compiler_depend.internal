@@ -69,6 +69,10 @@ CMakeFiles/functions.dir/functions.c.o
  /usr/include/x86_64-linux-gnu/sys/cdefs.h
  /usr/include/x86_64-linux-gnu/sys/select.h
  /usr/include/x86_64-linux-gnu/sys/types.h
- /usr/lib/gcc/x86_64-linux-gnu/13/include/stdarg.h
- /usr/lib/gcc/x86_64-linux-gnu/13/include/stddef.h
+ /usr/lib/llvm-18/lib/clang/18/include/__stdarg___gnuc_va_list.h
+ /usr/lib/llvm-18/lib/clang/18/include/__stddef_null.h
+ /usr/lib/llvm-18/lib/clang/18/include/__stddef_size_t.h
+ /usr/lib/llvm-18/lib/clang/18/include/__stddef_wchar_t.h
+ /usr/lib/llvm-18/lib/clang/18/include/stdarg.h
+ /usr/lib/llvm-18/lib/clang/18/include/stddef.h
 
