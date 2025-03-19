@@ -73,15 +73,15 @@ CMakeFiles/Laba_3_10.dir/main.c.o: CMakeFiles/Laba_3_10.dir/flags.make
 CMakeFiles/Laba_3_10.dir/main.c.o: /home/tim/2-sem/Laba_3_10/main.c
 CMakeFiles/Laba_3_10.dir/main.c.o: CMakeFiles/Laba_3_10.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/tim/2-sem/Laba_3_10/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/Laba_3_10.dir/main.c.o"
-	/usr/bin/clang $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/Laba_3_10.dir/main.c.o -MF CMakeFiles/Laba_3_10.dir/main.c.o.d -o CMakeFiles/Laba_3_10.dir/main.c.o -c /home/tim/2-sem/Laba_3_10/main.c
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/Laba_3_10.dir/main.c.o -MF CMakeFiles/Laba_3_10.dir/main.c.o.d -o CMakeFiles/Laba_3_10.dir/main.c.o -c /home/tim/2-sem/Laba_3_10/main.c
 
 CMakeFiles/Laba_3_10.dir/main.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/Laba_3_10.dir/main.c.i"
-	/usr/bin/clang $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/tim/2-sem/Laba_3_10/main.c > CMakeFiles/Laba_3_10.dir/main.c.i
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/tim/2-sem/Laba_3_10/main.c > CMakeFiles/Laba_3_10.dir/main.c.i
 
 CMakeFiles/Laba_3_10.dir/main.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/Laba_3_10.dir/main.c.s"
-	/usr/bin/clang $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/tim/2-sem/Laba_3_10/main.c -o CMakeFiles/Laba_3_10.dir/main.c.s
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/tim/2-sem/Laba_3_10/main.c -o CMakeFiles/Laba_3_10.dir/main.c.s
 
 # Object files for target Laba_3_10
 Laba_3_10_OBJECTS = \

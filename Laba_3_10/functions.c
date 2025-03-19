@@ -7,7 +7,7 @@
 
 //* ======================== STACK ===========================
 
-Stack* createNode(char data) 
+Stack* createNode(char data)                        // функция создания элемента стека
 {
     Stack* new_node = malloc(sizeof(Stack));
     if (new_node) 
@@ -18,12 +18,12 @@ Stack* createNode(char data)
     return new_node;
 }
 
-int isEmpty(Stack* stack) 
+int isEmpty(Stack* stack)                           // функция проверки стека на пустоту
 {
     return stack == NULL;
 }
 
-void push(Stack** stack, char new_data) 
+void push(Stack** stack, char new_data)             // функция добавления элемента в стек
 {
     Stack* new_node = createNode(new_data);
     if (!new_node) 
@@ -36,7 +36,7 @@ void push(Stack** stack, char new_data)
     *stack = new_node;
 }
 
-void pop(Stack** stack) 
+void pop(Stack** stack)                             // функция удаления элемента из стека
 {
     if (isEmpty(*stack)) 
 	{
@@ -51,7 +51,7 @@ void pop(Stack** stack)
     }
 }
 
-int peek(Stack* stack) 
+int peek(Stack* stack)                              // функция возвращения верхнего элемента стека
 {
     if (!isEmpty(stack)) 
 	{
@@ -60,7 +60,7 @@ int peek(Stack* stack)
     return 404;
 }
 
-void display_stack(Stack* stack)
+void display_stack(Stack* stack)                    // функция вывода элементов стека
 {
     printf("Stack:\n");
     while (stack != NULL)
@@ -72,7 +72,7 @@ void display_stack(Stack* stack)
 }
 
 //* ======================== MATH ========================
-void check_brackets(Stack* stack, char* str)
+void check_brackets(Stack* stack, char* str)        // функция проверки синтаксиса скобок
 {
 	int error_flag = 0;
 	for (int i = 0; i < strlen(str) && !error_flag; i++)
@@ -145,7 +145,7 @@ void skipSpaces(const char **s)
     while (isspace(**s)) (*s)++;
 }
 
-Linear parseLinearFactor(const char **s, const char *unknownVar) 
+Linear parseLinearFactor(const char **s, const char *unknownVar) // функция вычисления линейного фактора
 {
     skipSpaces(s);
     Linear result = {0, 0};

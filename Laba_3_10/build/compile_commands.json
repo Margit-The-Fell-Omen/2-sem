@@ -1,13 +1,13 @@
 [
 {
   "directory": "/home/tim/2-sem/Laba_3_10/build",
-  "command": "/usr/bin/clang   -g -o CMakeFiles/functions.dir/functions.c.o -c /home/tim/2-sem/Laba_3_10/functions.c",
+  "command": "/usr/bin/cc   -g -o CMakeFiles/functions.dir/functions.c.o -c /home/tim/2-sem/Laba_3_10/functions.c",
   "file": "/home/tim/2-sem/Laba_3_10/functions.c",
   "output": "CMakeFiles/functions.dir/functions.c.o"
 },
 {
   "directory": "/home/tim/2-sem/Laba_3_10/build",
-  "command": "/usr/bin/clang   -g -o CMakeFiles/Laba_3_10.dir/main.c.o -c /home/tim/2-sem/Laba_3_10/main.c",
+  "command": "/usr/bin/cc   -g -o CMakeFiles/Laba_3_10.dir/main.c.o -c /home/tim/2-sem/Laba_3_10/main.c",
   "file": "/home/tim/2-sem/Laba_3_10/main.c",
   "output": "CMakeFiles/Laba_3_10.dir/main.c.o"
 }
