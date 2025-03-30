@@ -46,6 +46,10 @@ void input_int_var(int* a, int t, int min, int max)							// функция вв
 		case 3:
 			printf("Выберите состав семьи:\n\t1. отец, мать, брат\n\t2. отец, мать, сестра, брат\n\t3. отец, мать, сестра\n (1-3): \n");
 			break;
+		case 4:
+			printf("Выберите какую информацию вывести:\n\t1 - ФИО студентов\n\t2 - ФИО семей студентов\n\t3 - ФИО студентов и их семей\n\t4 - для выхода из этого меню\n(1-4): \n");
+			break;
+
 		}
 		check = scanf("%d", a);								   				// ввод значения
 		if (check != 1)														// проверка правильности типа введённого значения
@@ -87,7 +91,7 @@ void input_students_names(Full_name* students, int number_of_students)		// фу�
 	}
 }
 
-int input_students_with_families_names( Student_with_family* students, int number_of_students, int family_choice)	// функция ввода ФИО студентов с семьёй
+void input_students_with_families_names( Student_with_family* students, int number_of_students, int family_choice)	// функция ввода ФИО студентов с семьёй
 {
 	int function_choice;
 	for (int i = 0; i < number_of_students; i++)																	// цикл по студентам
@@ -176,9 +180,6 @@ int input_students_with_families_names( Student_with_family* students, int numbe
 		break;
 		}
 	}
-	printf("Введите что вывести на экран: \n\t1 - вывод ФИО студента\n\t2 - вывод ФИО семьи студента\n\t3 - вывод ФИО студента и его семьи\n");
-	input_int_var(&function_choice, 4, 1, 3);																		// выбор функции вывода
-	return function_choice;
 }
 
 void input_str(char* destination)										// функция ввода названия фирмы
@@ -397,3 +398,4 @@ void restart_program(int* flag)																				    // функция пер�
 	else
 		printf("Завершение работы...\n");																		// вывод сообщения о завершении работы программы
 }
+

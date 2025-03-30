@@ -1,6 +1,6 @@
 #ifndef MY_HEADER
 #define MY_HEADER
-
+ 
 //* ==================== максимальные размеры полей структуры ====================
 #define MAX_NAME_SIZE 62            // максимальная длина имени/фамилии/отчества
 
@@ -55,7 +55,7 @@ void students_with_families_free(Student_with_family* students);                
 void input_int_var(int* a, int t, int min, int max);                                                                            // функция ввода целого числа
 
 void input_students_names(Full_name* students, int number_of_students);                                                         // функция ввода ФИО студентов без семей
-int input_students_with_families_names( Student_with_family* students, int number_of_students, int family_choice);              // ввод ФИО студентов с семьями
+void input_students_with_families_names( Student_with_family* students, int number_of_students, int family_choice);              // ввод ФИО студентов с семьями
 
 void input_str(char* destination);				                                                                                // функция ввода строки
 

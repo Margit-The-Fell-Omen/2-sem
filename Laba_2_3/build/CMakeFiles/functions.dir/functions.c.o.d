@@ -1,5 +1,5 @@
 CMakeFiles/functions.dir/functions.c.o: \
- /home/tim/sem-2/Laba_2_3/functions.c /usr/include/stdc-predef.h \
+ /home/tim/2-sem/Laba_2_3/functions.c /usr/include/stdc-predef.h \
  /usr/include/stdio.h \
  /usr/include/x86_64-linux-gnu/bits/libc-header-start.h \
  /usr/include/features.h /usr/include/features-time64.h \
@@ -51,4 +51,4 @@ CMakeFiles/functions.dir/functions.c.o: \
  /usr/include/x86_64-linux-gnu/bits/stdlib-float.h /usr/include/string.h \
  /usr/include/x86_64-linux-gnu/bits/types/locale_t.h \
  /usr/include/x86_64-linux-gnu/bits/types/__locale_t.h \
- /usr/include/strings.h /home/tim/sem-2/Laba_2_3/header.h
+ /usr/include/strings.h /home/tim/2-sem/Laba_2_3/header.h
