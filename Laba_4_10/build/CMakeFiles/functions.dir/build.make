@@ -73,15 +73,15 @@ CMakeFiles/functions.dir/functions.c.o: CMakeFiles/functions.dir/flags.make
 CMakeFiles/functions.dir/functions.c.o: /home/tim/2-sem/Laba_4_10/functions.c
 CMakeFiles/functions.dir/functions.c.o: CMakeFiles/functions.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/tim/2-sem/Laba_4_10/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/functions.dir/functions.c.o"
-	/usr/bin/clang $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/functions.dir/functions.c.o -MF CMakeFiles/functions.dir/functions.c.o.d -o CMakeFiles/functions.dir/functions.c.o -c /home/tim/2-sem/Laba_4_10/functions.c
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/functions.dir/functions.c.o -MF CMakeFiles/functions.dir/functions.c.o.d -o CMakeFiles/functions.dir/functions.c.o -c /home/tim/2-sem/Laba_4_10/functions.c
 
 CMakeFiles/functions.dir/functions.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/functions.dir/functions.c.i"
-	/usr/bin/clang $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/tim/2-sem/Laba_4_10/functions.c > CMakeFiles/functions.dir/functions.c.i
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/tim/2-sem/Laba_4_10/functions.c > CMakeFiles/functions.dir/functions.c.i
 
 CMakeFiles/functions.dir/functions.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/functions.dir/functions.c.s"
-	/usr/bin/clang $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/tim/2-sem/Laba_4_10/functions.c -o CMakeFiles/functions.dir/functions.c.s
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/tim/2-sem/Laba_4_10/functions.c -o CMakeFiles/functions.dir/functions.c.s
 
 # Object files for target functions
 functions_OBJECTS = \

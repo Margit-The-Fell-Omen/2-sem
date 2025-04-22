@@ -4,7 +4,6 @@
 
 //* ==================== максимальные размеры полей структуры ====================
 #define MAX_STR_SIZE 256            // максимальная длина строки
-#define MAX_GRAPH_SIZE 256          // максимальный размер графа
 
 //*  =================== STRUCT =================== 
 typedef struct Q_node             // структура очереди
@@ -12,7 +11,8 @@ typedef struct Q_node             // структура очереди
     int clinic_number;          //
     int total_beds;             //
     int free_beds;              //
-    //TODO location
+    char** patients;
+    char location[MAX_STR_SIZE];
     //TODO pointer
 
     struct Q_node* next;          //
@@ -24,17 +24,6 @@ typedef struct Queue            // структура очереди
     q_node* rear;                 // 
 } Queue;
 
-// typedef struct G_node 
-// {
-//     int vertex;
-//     struct G_node* next;
-// } g_node;
-
-// typedef struct Graph 
-// {
-//     int numVertices;
-//     g_node** adjLists; // Array of pointer to Node lists
-// } Graph;
 
 //* ==================== QUEUE =================== 
 Queue* create_queue();
@@ -44,17 +33,19 @@ q_node* dequeue(Queue* queue);
 int peek(Queue* queue, int field);
 void free_queue(Queue* queue);
 
-//* ==================== GRAPH =================== 
-
-
 //* ==================== FUNCTIONAL =================== 
-
+void add_patient(Queue* queue);
+void delete_patients(Queue* queue);
 
 //* ==================== INPUT =================== 
-void input_int_var(int* a, int t, int min, int max);                    // функция ввода целого числа
-void input_str(char* destination);				                        // функция ввода строки
-void input_queue(Queue* queue);
+void input_int_var(int* a, int min, int max);                    // функция ввода целого числа
+void input_str(char* destination, int check_num);				                        // функция ввода строки
+int validateLatLon(const char *input);
+int input_queue(Queue* queue);
 
+//* ==================== OUTPUT ===================
+void output_beds(Queue* queue, int queue_len);
+void output_patients(Queue* queue, int patient_num, int nospital_num);
 //* ==================== RESTART =================== 
 void restart_program(int* flag);		                                // функция перезапуска программы
 #endif

@@ -8,7 +8,6 @@ int main()
     int behaviour_choice;                                               // выбор выполняемых действий
     while (flag)                                                        // главный цикл программы
     {
-        input_int_var(& behaviour_choice, 1, 1, 2);       // функция ввода 
 
         restart_program(&flag);					                // функция перезапуска программы
     }
