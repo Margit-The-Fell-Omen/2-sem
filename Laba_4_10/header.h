@@ -6,7 +6,7 @@
 #define MAX_STR_SIZE 256            // максимальная длина строки
 
 //*  =================== STRUCT =================== 
-typedef struct Q_node             // структура очереди
+typedef struct Q_node             // структура элемента очереди
 {
     int clinic_number;          //
     int total_beds;             //
@@ -35,7 +35,12 @@ void free_queue(Queue* queue);
 
 //* ==================== FUNCTIONAL =================== 
 void add_patient(Queue* queue);
-void delete_patients(Queue* queue);
+void delete_patient(Queue* queue);
+
+int parse_coordinates(const char *coord_str, double *latitude, double *longitude);
+double degrees_to_radians(double degrees);
+double calculate_distance(const char *coord1_str, const char *coord2_str);
+int find_nearest_hospital(Queue* queue, char* location);
 
 //* ==================== INPUT =================== 
 void input_int_var(int* a, int min, int max);                    // функция ввода целого числа
@@ -44,8 +49,8 @@ int validateLatLon(const char *input);
 int input_queue(Queue* queue);
 
 //* ==================== OUTPUT ===================
-void output_beds(Queue* queue, int queue_len);
-void output_patients(Queue* queue, int patient_num, int nospital_num);
+void output_beds(Queue* queue);
+void output_patients(Queue* queue, int nospital_num);
 //* ==================== RESTART =================== 
 void restart_program(int* flag);		                                // функция перезапуска программы
 #endif

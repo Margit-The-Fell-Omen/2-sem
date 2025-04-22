@@ -1,4 +1,5 @@
 #include <ctype.h>
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -82,8 +83,73 @@ void free_queue(Queue* queue)
     free(queue);
 }
 //* ======================== FUNCTIONAL ========================
+void menu(Queue* queue)
+{
+	int user_choice = 0;
+	int user_output_choice = 0;
+	int hospital_num = 0;
+	Queue* temp = queue;
+	int h_num_flag = 1;
+	printf("Выберите действие: \n\t1 - ввод информации о больницах\n\t2 - вывод информации о больницах\n\t\
+	3 - Запись пациента в больницу\n\t4 - Выписка пациента из больницы\n\t5 - рассчёт расстояния от пациента до ближайшей больницы\n\t\
+	0 - выход из меню");
+	input_int_var(&user_choice, 0, 5);
+	switch (user_choice) 
+	{
+		case 0:
+		break;
 
+		case 1:
+		input_queue(queue);
+		break;
 
+		case 2:
+		printf("Выберите информацию для вывода:\n\t1 - вывод информации о свободных местах в больницах\n\t\
+		2 - вывод информации о пациентах в конкретной больнице");
+		input_int_var(&user_output_choice, 1, 2);
+		switch (user_output_choice) 
+		{
+			case 1:
+			output_beds(queue);
+			break;
+			case 2:
+			printf("Введите номер больницы");
+			input_int_var(&hospital_num, 1, 100);
+			while (temp->front)
+			{
+				if (temp->front->clinic_number == hospital_num)
+				{
+					h_num_flag = 0;
+					break;
+				}
+				temp->front = temp->front->next;
+			}
+	
+			if (h_num_flag)
+			{
+				printf("В городе нет больницы с таким номером, повторите ввод.");
+			}
+			else 
+			{
+				output_patients(queue, hospital_num);
+			}
+			break;
+		}
+		break;
+
+		case 3:
+
+		break;
+
+		case 4:
+
+		break;
+
+		case 5:
+
+		break;
+	}
+}
 
 void add_patient(Queue* queue)
 {
@@ -96,7 +162,7 @@ void add_patient(Queue* queue)
 	{
 		printf("Введите номер принимающей больницы:");
 		input_int_var(&hospital_num, 1, 100);
-		while (temp->front != temp->rear)
+		while (temp->front)
 		{
 			if (temp->front->clinic_number == hospital_num)
 			{
@@ -141,7 +207,7 @@ void add_patient(Queue* queue)
 	printf("Пациент успешно добавлен.");
 }
 
-void delete_patients(Queue* queue)
+void delete_patient(Queue* queue)
 {
 	int hospital_num = 0;
 	int h_num_flag = 1;
@@ -199,7 +265,139 @@ void delete_patients(Queue* queue)
 	printf("Пациент %s успешно выписан.", patient_surname);
 }
 
+// Вспомогательная функция для парсинга строки координат
+// Возвращает 1 при успехе, 0 при ошибке
+int parse_coordinates(const char *coord_str, double *latitude, double *longitude) 
+{
+    // Находим запятую - разделитель широты и долготы
+    char *comma_ptr = strchr(coord_str, ',');
+    if (comma_ptr == NULL) 
+	{
+        fprintf(stderr, "Ошибка: Запятая не найдена в строке координат: %s\n", coord_str);
+        return 0; // Ошибка формата
+    }
 
+    char *endptr_lat;
+    char *endptr_lon;
+
+    // Преобразуем часть строки до запятой в широту (double)
+    // strtod пропускает начальные пробелы
+    *latitude = strtod(coord_str, &endptr_lat);
+
+    // Проверяем, что strtod остановился на пробеле или на запятой
+    char *temp_ptr = endptr_lat;
+    while (isspace((unsigned char)*temp_ptr)) 
+	{
+        temp_ptr++;
+    }
+    if (temp_ptr != comma_ptr) 
+	{
+         fprintf(stderr, "Ошибка: Неверный формат перед запятой в строке: %s\n", coord_str);
+         return 0; // Ошибка формата
+    }
+
+    // Преобразуем часть строки после запятой в долготу (double)
+    // strtod пропускает начальные пробелы
+    *longitude = strtod(comma_ptr + 1, &endptr_lon);
+
+     // Проверяем, что после числа остались только пробельные символы (или конец строки)
+    while (isspace((unsigned char)*endptr_lon)) 
+	{
+        endptr_lon++;
+    }
+    if (*endptr_lon != '\0') 
+	{
+         fprintf(stderr, "Ошибка: Недопустимые символы после долготы в строке: %s\n", coord_str);
+         return 0; // Ошибка формата
+    }
+
+    // Простая проверка на случай, если strtod не смог ничего преобразовать (вернул 0)
+    // и сама строка не начиналась с '0'. Для большей надежности можно проверять errno.
+    if (*latitude == 0 && endptr_lat == coord_str) 
+	{
+         fprintf(stderr, "Ошибка: Не удалось преобразовать широту из строки: %s\n", coord_str);
+        return 0;
+    }
+     if (*longitude == 0 && endptr_lon == comma_ptr + 1) 
+	 {
+         fprintf(stderr, "Ошибка: Не удалось преобразовать долготу из строки: %s\n", coord_str);
+        return 0;
+    }
+
+
+    return 1; // Успешный парсинг
+}
+
+// Функция для перевода градусов в радианы
+double degrees_to_radians(double degrees) 
+{
+    // M_PI определена в math.h (может потребоваться #define _USE_MATH_DEFINES)
+    return degrees * M_PI / 180.0;
+}
+
+/**
+ * @brief Рассчитывает расстояние между двумя географическими точками по их координатам.
+ *
+ * Функция использует формулу гаверсинуса для расчета расстояния по большому кругу
+ * на сфере, аппроксимирующей Землю.
+ *
+ * @param coord1_str Строка с координатами первой точки в формате "<широта>[пробелы]","[пробелы]<долгота>".
+ * @param coord2_str Строка с координатами второй точки в том же формате.
+ * @return Расстояние между точками в километрах. Возвращает -1.0 в случае ошибки
+ *         парсинга входных строк координат.
+ */
+double calculate_distance(const char *coord1_str, const char *coord2_str) 
+{
+    double lat1_deg, lon1_deg, lat2_deg, lon2_deg;
+
+    // Парсинг координат из строк
+    if (!parse_coordinates(coord1_str, &lat1_deg, &lon1_deg)) 
+	{
+        fprintf(stderr, "Ошибка парсинга координат точки 1.\n");
+        return -1.0; // Возвращаем значение ошибки
+    }
+    if (!parse_coordinates(coord2_str, &lat2_deg, &lon2_deg)) 
+	{
+        fprintf(stderr, "Ошибка парсинга координат точки 2.\n");
+        return -1.0; // Возвращаем значение ошибки
+    }
+
+    // Перевод градусов в радианы
+    double lat1_rad = degrees_to_radians(lat1_deg);
+    double lon1_rad = degrees_to_radians(lon1_deg);
+    double lat2_rad = degrees_to_radians(lat2_deg);
+    double lon2_rad = degrees_to_radians(lon2_deg);
+
+    // Средний радиус Земли в километрах
+    const double R = 6371.0;
+
+    // Разница долгот и широт
+    double dlon = lon2_rad - lon1_rad;
+    double dlat = lat2_rad - lat1_rad;
+
+    // Формула гаверсинуса
+    double a = pow(sin(dlat / 2.0), 2) + cos(lat1_rad) * cos(lat2_rad) * pow(sin(dlon / 2.0), 2);
+    double c = 2.0 * atan2(sqrt(a), sqrt(1.0 - a));
+    double distance = R * c;
+
+    return distance; // Возвращаем расстояние в километрах
+}
+
+int find_nearest_hospital(Queue* queue, char* location)
+{
+	Queue* temp = queue;
+	double min_distance = 6371.0;
+	int distance = 0;
+	while (temp->front != temp->rear)
+	{
+		distance = calculate_distance(temp->front->location, location);
+		if (distance < min_distance)
+		{
+			min_distance = distance;
+		}
+		temp->front = temp->front->next;
+	}
+}
 
 //* ======================== INPUT ========================
 void input_int_var(int* a, int min, int max)							// функция ввода и проверки целых чисел
@@ -280,7 +478,7 @@ void input_str(char* destination, int check_num)										// функция вв
 				continue;
 			}
 
-			if (validateLatLon(buffer))
+			if (!validateLatLon(buffer))
 			{
 				printf("\033[1;31m Неправильный формат координат. Пожалуйста, попробуйте ещё раз.\033[0m\n");
 				continue;
@@ -425,7 +623,7 @@ int input_queue(Queue* queue)
 }
 
 //* ======================== OUTPUT ========================
-void output_beds(Queue* queue, int queue_len)
+void output_beds(Queue* queue)
 {
 	Queue* temp = queue;
 	printf("Данные о больнице:\n");
@@ -441,14 +639,14 @@ void output_beds(Queue* queue, int queue_len)
 
 }
 
-void output_patients(Queue* queue, int patient_num, int hospital_num)
+void output_patients(Queue* queue, int hospital_num)
 {
 	Queue* temp = queue;
 	while(temp->front->clinic_number != hospital_num)
 	{
 		temp->front = temp->front->next;
 	}
-
+	int patient_num = temp->front->total_beds - temp->front->free_beds;
 	printf("Данные о больнице:\n");
 	printf("+-------------------------------------------------+\n");
 	printf("| № больницы | № пациента |   Фамилия пациента    |\n");
