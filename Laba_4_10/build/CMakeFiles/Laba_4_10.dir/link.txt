@@ -1,1 +1,1 @@
-/usr/bin/cc -g CMakeFiles/Laba_4_10.dir/main.c.o -o Laba_4_10  libfunctions.a -lm 
+/usr/bin/clang -g CMakeFiles/Laba_4_10.dir/main.c.o -o Laba_4_10  libfunctions.a -lm 

@@ -14,9 +14,8 @@ typedef struct Q_node    // структура элемента очереди
     int free_beds;                                                        // всего свободных мест
     char** patients;                                                      // пациенты больницы
     char location[MAX_STR_SIZE];                                          // местоположение больницы
-    void (*calculate_distance)(double \
-    calculate_distance(const char *coord1_str, const char *coord2_str));  // указатель на функцию вывода ФИО студента с семьёй
-
+    void (*calculate_distance)\
+    (const char *coord1_str, const char *coord2_str);                     // Указатель на функцию для расчета расстояния
     struct Q_node* next;                                                  // следующий элемент очереди
 } q_node;
 

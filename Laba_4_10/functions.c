@@ -23,25 +23,34 @@ int isEmpty(Queue* queue)
 
 }
 
-int enqueue(Queue* queue, int clinic_number, int total_beds, int free_beds, const char* location) 
+int enqueue(Queue* queue, int clinic_number, int total_beds, int free_beds, const char* location)
 {
+    // 0. Проверка указателя на саму очередь
     if (queue == NULL) {
         fprintf(stderr, "Ошибка: Попытка добавить элемент в NULL очередь.\n");
-        return 0; // Ошибка
+        return 0; // Ошибка: очередь не существует
     }
+
     // 1. Выделяем память для нового узла
     q_node* new_node = (q_node*)malloc(sizeof(q_node));
+
     // 2. Проверяем результат malloc
     if (new_node == NULL) {
         fprintf(stderr, "Ошибка: Не удалось выделить память для нового узла очереди.\n");
+        // В реальном приложении здесь может быть более сложная обработка ошибки
         return 0; // Сообщаем об ошибке
     }
+
     // 3. Инициализируем ВСЕ поля нового узла
     new_node->clinic_number = clinic_number;
     new_node->total_beds = total_beds;
     new_node->free_beds = free_beds;
-    new_node->patients = NULL; // Важно инициализировать указатели!
-    new_node->next = NULL;    // Новый узел всегда будет последним
+    new_node->patients = NULL; // Инициализируем указатель на массив пациентов
+    new_node->next = NULL;     // Новый узел всегда будет последним, его next = NULL
+
+    // Инициализируем указатель на функцию (ВАЖНО!)
+    new_node->calculate_distance = NULL; // Или присвоить указатель на реальную функцию, если нужно
+                                         // например: new_node->calculate_distance = some_distance_function;
 
     // Копируем строку местоположения (безопасно)
     if (location != NULL) {
@@ -52,26 +61,26 @@ int enqueue(Queue* queue, int clinic_number, int total_beds, int free_beds, cons
     }
 
     // 4. Добавляем узел в очередь
-    if (isEmpty(queue)) {
-        // Если очередь пуста, front и rear указывают на новый узел
+    if (queue->front == NULL) {
+        // Если очередь пуста (front == NULL), то и rear должен быть NULL.
+        // Новый узел становится и началом, и концом очереди.
         queue->front = new_node;
         queue->rear = new_node;
-        // new_node->next УЖЕ равен NULL, дополнительных присваиваний не нужно
-    } else {
-        // Если очередь не пуста:
-        // а) Текущий последний узел должен указывать на новый
-        if (queue->rear != NULL) 
-		{
-			queue->rear->next = new_node; // <<< ИСПРАВЛЕНО ЗДЕСЬ
-			queue->rear = new_node;
-		}
-		queue->front = new_node;
-        queue->rear = new_node;
-        // б) Обновляем указатель на хвост очереди
     }
-    return 1; // Успех
-}
+    else {
+        // Если очередь не пуста:
+        // а) Текущий последний узел (на который указывает rear)
+        //    должен указывать своим next на новый узел.
+        queue->rear->next = new_node; // <<< ИСПРАВЛЕНО
 
+        // б) Указатель на конец очереди (rear) теперь должен указывать
+        //    на новый добавленный узел.
+        queue->rear = new_node;       // <<< ИСПРАВЛЕНО
+    }
+
+    // Успешное добавление элемента
+    return 1;
+}
 
 q_node* dequeue(Queue* queue)
 {
@@ -139,7 +148,7 @@ void menu(Queue* queue)
 	int user_choice = 0;
 	int user_output_choice = 0;
 	int hospital_num = 0;
-	Queue* temp = queue;
+	q_node* current_node = queue->front;
 	int h_num_flag = 1;
 	int menu_flag = 1;
 	char location[MAX_STR_SIZE];
@@ -152,6 +161,7 @@ void menu(Queue* queue)
 		switch (user_choice) 
 		{
 			case 6:
+            free_queue(queue);
 			menu_flag = 0;
 			break;
 
@@ -172,28 +182,11 @@ void menu(Queue* queue)
 					break;
 					case 2:
 					printf("Введите номер больницы");
-					input_int_var(&hospital_num, 1, 100);
-					while (temp->front)
-					{
-						if (temp->front->clinic_number == hospital_num)
-						{
-							h_num_flag = 0;
-							break;
-						}
-						temp->front = temp->front->next;
-					}
-			
-					if (h_num_flag)
-					{
-						printf("В городе нет больницы с таким номером, повторите ввод.");
-					}
-					else 
-					{
-						output_patients(queue, hospital_num);
-					}
-					break;
-				}
-			}
+                    input_int_var(&hospital_num, 1, 1000);
+					output_patients(queue, hospital_num);
+                    break;
+                }
+            }
 			else
 			{
 				printf("Информация о больницах не введена! Введите информацию о больницах");
@@ -985,25 +978,75 @@ void output_beds(Queue* queue)
     printf("+-------+-------------------+---------------------------+\n");
 }
 
-void output_patients(Queue* queue, int hospital_num)
-{
-	Queue* temp = queue;
-	while(temp->front->clinic_number != hospital_num)
-	{
-		temp->front = temp->front->next;
-	}
-	int patient_num = temp->front->total_beds - temp->front->free_beds;
-	printf("Данные о больнице:\n");
-	printf("+-------------------------------------------------+\n");
-	printf("| № больницы | № пациента |   Фамилия пациента    |\n");
-	printf("+-------------------------------------------------+\n");
-	for (int i = 0; i < patient_num; i++)
-	{
-		printf("| %d | %d | %s |\n", temp->front->clinic_number, i, *(temp->front->patients + i));
-		printf("+----------------------------------------------------------------------------------------------------+\n");
-	}
+void output_patients(Queue* queue, int hospital_num) {
+    // 1. Проверка на пустую очередь или невалидный указатель queue
+    if (queue == NULL || queue->front == NULL) {
+        printf("Очередь пуста или не инициализирована.\n");
+        return; // Выходим, если очередь пуста
+    }
 
+    // 2. Используем временный указатель для *перебора* узлов, НЕ изменяя очередь
+    q_node* current_node = queue->front;
+
+    // 3. Ищем нужную больницу в очереди
+    while (current_node != NULL && current_node->clinic_number != hospital_num) {
+        current_node = current_node->next; // Переходим к следующему узлу
+    }
+
+    // 4. Проверяем, нашли ли мы больницу
+    if (current_node == NULL) {
+        printf("Больница с номером %d не найдена в очереди.\n", hospital_num);
+        return; // Выходим, если больница не найдена
+    }
+
+    // 5. Больница найдена (current_node указывает на нее). Рассчитываем кол-во пациентов.
+    //    Добавляем проверку на отрицательное значение, хотя это маловероятно при корректных данных
+    int patient_num = current_node->total_beds - current_node->free_beds;
+    if (patient_num < 0) {
+        patient_num = 0; // Кол-во пациентов не может быть отрицательным
+    }
+
+    // 6. Печатаем информацию о больнице и шапку таблицы
+    printf("Данные о больнице №%d (Местоположение: %s):\n",
+           current_node->clinic_number, current_node->location);
+    printf("Всего мест: %d, Свободно мест: %d, Занято мест (пациентов): %d\n",
+           current_node->total_beds, current_node->free_beds, patient_num);
+
+    // 7. Проверяем, есть ли вообще данные о пациентах
+    if (current_node->patients == NULL) {
+        if (patient_num > 0) {
+             printf("Информация о пациентах отсутствует (массив patients == NULL), хотя места заняты.\n");
+        } else {
+             printf("Пациентов нет.\n");
+        }
+        return; // Выходим, если нет массива пациентов
+    }
+
+    // 8. Печатаем таблицу пациентов, если они есть
+    if (patient_num > 0) {
+        printf("Список пациентов:\n");
+        // Выравниваем ширину столбцов (примерные значения, можно подстроить)
+        printf("+------------+------------+-------------------------+\n");
+        printf("| № больницы | № пациента |   Фамилия пациента      |\n");
+        printf("+------------+------------+-------------------------+\n");
+        for (int i = 0; i < patient_num; i++) {
+            // Дополнительная проверка: убедимся, что строка пациента не NULL
+            const char* patient_name = *(current_node->patients + i); // или current_node->patients[i]
+            if (patient_name == NULL) {
+                 printf("| %-10d | %-10d | %-23s |\n", current_node->clinic_number, i + 1, "(ошибка: NULL имя)");
+            } else {
+                 // Используем форматирование для выравнивания столбцов
+                 // %-Nd означает выравнивание по левому краю в поле шириной N
+                 printf("| %-10d | %-10d | %-23s |\n", current_node->clinic_number, i + 1, patient_name);
+            }
+        }
+        // Печатаем нижнюю границу таблицы один раз после цикла
+        printf("+------------+------------+-------------------------+\n");
+    } else {
+        printf("В больнице №%d нет пациентов.\n", hospital_num);
+    }
 }
+
 //* ======================== Restart ========================
 void restart_program(int* flag)																				    // функция перезапуска программы
 {
