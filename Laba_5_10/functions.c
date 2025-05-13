@@ -1,26 +1,9 @@
-#include <ctype.h>
-#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "header.h"
 
 
-/*// TODO ======================================
-    //! DONE !
-лаба 5
-построить бин дерево след образом
-первое значение заносится в корень дерева, большее направо меньшее налево, написать след функции
-1) обход в прямом порядке
-1.1 попасть в корень
-1.2 пройти левое поддерево, потом правое
-2) симметричный порядок
-2.1 пройти левое поддерево, потом корнь и правое поддерево
-3) обратный порядок
-3.1 пройти левое поддерево, правое поддерево, потом корень
-    //! DONE !
-  // TODO ======================================
-*/
 //* ======================== BIN_TREE ===========================
 
 Node* createNode(int data) 
@@ -29,7 +12,8 @@ Node* createNode(int data)
     Node* newNode = (Node*)malloc(sizeof(Node));
 
     // Проверяем, успешно ли выделилась память
-    if (newNode == NULL) {
+    if (newNode == NULL) 
+    {
         fprintf(stderr, "Ошибка: не удалось выделить память для нового узла\n");
         exit(EXIT_FAILURE); // Завершаем программу в случае ошибки выделения памяти
     }
@@ -43,18 +27,21 @@ Node* createNode(int data)
 Node* insertNode(Node* root, int data) 
 {
     // Если дерево (или поддерево) пусто, создаем новый узел и возвращаем его
-    if (root == NULL) {
+    if (root == NULL) 
+    {
         return createNode(data);
     }
 
     // Если вставляемое значение меньше значения текущего узла,
     // рекурсивно вставляем в левое поддерево
-    if (data < root->data) {
+    if (data < root->data) 
+    {
         root->left = insertNode(root->left, data);
     }
     // Если вставляемое значение больше значения текущего узла,
     // рекурсивно вставляем в правое поддерево
-    else if (data > root->data) {
+    else if (data > root->data) 
+    {
         root->right = insertNode(root->right, data);
     }
     // Если значение уже существует в дереве, ничего не делаем (можно добавить обработку дубликатов)
@@ -68,17 +55,20 @@ Node* insertNode(Node* root, int data)
 Node* searchNode(Node* root, int data) 
 {
     // Базовые случаи: корень равен NULL или значение найдено в корне
-    if (root == NULL || root->data == data) {
+    if (root == NULL || root->data == data) 
+    {
         return root;
     }
 
     // Если искомое значение меньше значения текущего узла,
     // ищем в левом поддереве
-    if (data < root->data) {
+    if (data < root->data) 
+    {
         return searchNode(root->left, data);
     }
     // Иначе (искомое значение больше), ищем в правом поддереве
-    else {
+    else 
+    {
         return searchNode(root->right, data);
     }
 }
@@ -87,7 +77,8 @@ Node* searchNode(Node* root, int data)
 // Выводит элементы в отсортированном порядке для BST
 void inorderTraversal(Node* root) 
 {
-    if (root != NULL) {
+    if (root != NULL) 
+    {
         inorderTraversal(root->left);    // Сначала обходим левое поддерево
         printf("%d ", root->data);       // Затем посещаем (печатаем) корень
         inorderTraversal(root->right);   // Затем обходим правое поддерево
@@ -97,7 +88,8 @@ void inorderTraversal(Node* root)
 // Прямой (pre-order) обход дерева: Корень -> Левый -> Правый
 void preorderTraversal(Node* root)
 {
-    if (root != NULL) {
+    if (root != NULL) 
+    {
         printf("%d ", root->data);       // Сначала посещаем (печатаем) корень
         preorderTraversal(root->left);   // Затем обходим левое поддерево
         preorderTraversal(root->right);  // Затем обходим правое поддерево
@@ -107,7 +99,8 @@ void preorderTraversal(Node* root)
 // Обратный (post-order) обход дерева: Левый -> Правый -> Корень
 void postorderTraversal(Node* root)
 {
-    if (root != NULL) {
+    if (root != NULL) 
+    {
         postorderTraversal(root->left);  // Сначала обходим левое поддерево
         postorderTraversal(root->right); // Затем обходим правое поддерево
         printf("%d ", root->data);      // Затем посещаем (печатаем) корень
@@ -132,8 +125,10 @@ void freeTree(Node* root)
 }
 
 // Функция для поиска минимального узла в дереве (левый потомок до конца)
-Node* findMin(Node* node) {
-    while (node && node->left != NULL) {
+Node* findMin(Node* node) 
+{
+    while (node && node->left != NULL) 
+    {
         node = node->left;
     }
     return node;
@@ -143,38 +138,49 @@ Node* findMin(Node* node) {
 Node* deleteNode(Node* root, int key) 
 {
     // Если дерево пустое, возвращаем NULL
-    if (root == NULL) {
+    if (root == NULL) 
+    {
         return root;
     }
 
     // Ищем узел для удаления по правилу BST
-    if (key < root->data) {
+    if (key < root->data) 
+    {
         // Если ключ меньше текущего, идём в левое поддерево
         root->left = deleteNode(root->left, key);
-    } else if (key > root->data) {
+    } 
+    else if (key > root->data) 
+    {
         // Если ключ больше текущего, идём в правое поддерево
         root->right = deleteNode(root->right, key);
-    } else {
+    } 
+    else 
+    {
         // Найден узел, соответствующий ключу
         // Обработка трёх основных случаев
 
         // 1. Узел не имеет потомков (листовой)
-        if (root->left == NULL && root->right == NULL) {
+        if (root->left == NULL && root->right == NULL) 
+        {
             free(root);
             return NULL;
         }
         // 2. Узел имеет только одного потомка
-        else if (root->left == NULL) {
+        else if (root->left == NULL) 
+        {
             Node* temp = root->right;
             free(root);
             return temp;
-        } else if (root->right == NULL) {
+        } 
+        else if (root->right == NULL) 
+        {
             Node* temp = root->left;
             free(root);
             return temp;
         }
         // 3. Узел имеет двух потомков
-        else {
+        else 
+        {
             // Находим минимальный узел в правом поддереве (наследник)
             Node* temp = findMin(root->right);
             // Копируем значение наследника в текущий узел
@@ -293,7 +299,8 @@ Node* input_bin_tree()
 // Функция меню для взаимодействия с пользователем
 // Принимает УКАЗАТЕЛЬ НА УКАЗАТЕЛЬ на текущий корень дерева (Node** root_ptr)
 // и указатель на флаг продолжения работы программы
-void menu(Node** root_ptr, int* program_running_flag) {
+void menu(Node** root_ptr, int* program_running_flag) 
+{
     // Используем локальную переменную current_root для удобства,
     // которая является разыменованным указателем root_ptr.
     // Все изменения, которые должны затронуть корень дерева в main,
@@ -313,8 +320,10 @@ void menu(Node** root_ptr, int* program_running_flag) {
                "0. Выход\n"
                "Выберите действие: ");
         input_int_var(&choice, 0, 5);    
-        switch (choice) {
-            case 1: { // Добавить элементы
+        switch (choice) 
+        {
+            case 1: 
+            { // Добавить элементы
                 int sub_choice = 0;
                 printf("\nДобавление элементов:\n"
                     "\t1 - Создать новое дерево (старое будет удалено, если существует)\n"
@@ -322,8 +331,10 @@ void menu(Node** root_ptr, int* program_running_flag) {
                     "Выберите действие: ");
                 input_int_var(&sub_choice, 1, 2);
 
-                if (sub_choice == 1) { // Создать новое дерево
-                    if (current_root != NULL) {
+                if (sub_choice == 1) 
+                { // Создать новое дерево
+                    if (current_root != NULL) 
+                    {
                         printf("Удаление существующего дерева...\n");
                         freeTree(current_root); // Освобождаем память старого дерева
                         current_root = NULL;    // Обнуляем указатель
@@ -332,17 +343,23 @@ void menu(Node** root_ptr, int* program_running_flag) {
                     if (current_root != NULL) printf("Создано новое дерево.\n");
                     else printf("Новое дерево не было создано (возможно, было введено 0 элементов).\n");
 
-                } else { // sub_choice == 2: Добавить в текущее дерево
-                    if (current_root == NULL) {
+                } 
+                else 
+                { // sub_choice == 2: Добавить в текущее дерево
+                    if (current_root == NULL) 
+                    {
                         printf("Текущее дерево пусто. Создаём новое дерево...\n");
                         current_root = input_bin_tree();
                         if (current_root != NULL) printf("Создано новое дерево.\n");
                         else printf("Новое дерево не было создано (возможно, было введено 0 элементов).\n");
-                    } else {
+                    } 
+                    else 
+                    {
                         int add_count = 0;
                         printf("Сколько элементов добавить в текущее дерево? (1-100): ");
                         input_int_var(&add_count, 1, 100);
-                        for (int i = 0; i < add_count; i++) {
+                        for (int i = 0; i < add_count; i++) 
+                        {
                             int elem_to_add = 0;
                             printf("Введите элемент #%d для добавления: ", i + 1);
                             input_int_var(&elem_to_add, 0, 0);
@@ -353,44 +370,62 @@ void menu(Node** root_ptr, int* program_running_flag) {
                 }
                 break;
             }
-            case 2: { // Удалить элемент
-                if (current_root == NULL) {
+            case 2: 
+            { // Удалить элемент
+                if (current_root == NULL) 
+                {
                     printf("Дерево пусто. Нечего удалять.\n");
-                } else {
+                } 
+                else 
+                {
                     int key_to_delete = 0;
                     printf("Введите значение элемента для удаления: ");
                     input_int_var(&key_to_delete, 0, 0);
                     
                     Node* node_exists = searchNode(current_root, key_to_delete);
-                    if (node_exists != NULL) {
+                    if (node_exists != NULL) 
+                    {
                         current_root = deleteNode(current_root, key_to_delete); // deleteNode вернет новый корень
                         printf("Элемент %d удален.\n", key_to_delete);
-                    } else {
+                    } 
+                    else 
+                    {
                         printf("Элемент %d не найден в дереве. Удаление не произведено.\n", key_to_delete);
                     }
                 }
                 break;
             }
-            case 3: { // Найти элемент
-                if (current_root == NULL) {
+            case 3: 
+            { // Найти элемент
+                if (current_root == NULL) 
+                {
                     printf("Дерево пусто. Нечего искать.\n");
-                } else {
+                } 
+                else 
+                {
                     int key_to_find = 0;
                     printf("Введите значение элемента для поиска: ");
                     input_int_var(&key_to_find, 0, 0);
                     Node* foundNode = searchNode(current_root, key_to_find);
-                    if (foundNode != NULL) {
+                    if (foundNode != NULL) 
+                    {
                         printf("Элемент %d найден в дереве.\n", key_to_find);
-                    } else {
+                    } 
+                    else 
+                    {
                         printf("Элемент %d не найден в дереве.\n", key_to_find);
                     }
                 }
                 break;
             }
-            case 4: { // Вывести дерево (обходы)
-                if (current_root == NULL) {
+            case 4: 
+            { // Вывести дерево (обходы)
+                if (current_root == NULL) 
+                {
                     printf("Дерево пусто. Нечего выводить.\n");
-                } else {
+                } 
+                else 
+                {
                     int traversal_choice = 0;
                     printf("\nВыберите тип обхода для вывода дерева:\n"
                         "\t1 - Симметричный (In-order) - элементы в отсортированном порядке\n"
@@ -398,7 +433,8 @@ void menu(Node** root_ptr, int* program_running_flag) {
                         "\t3 - Обратный (Post-order) - лево, право, корень\n"
                         "Выберите действие: ");
                     input_int_var(&traversal_choice, 1, 3);
-                    switch (traversal_choice) {
+                    switch (traversal_choice) 
+                    {
                         case 1:
                             printf("Симметричный обход (In-order): ");
                             inorderTraversal(current_root);
@@ -418,17 +454,22 @@ void menu(Node** root_ptr, int* program_running_flag) {
                 }
                 break;
             }
-            case 5: { // Очистить (удалить) всё дерево
-                if (current_root == NULL) {
+            case 5: 
+            { // Очистить (удалить) всё дерево
+                if (current_root == NULL) 
+                {
                     printf("Дерево уже пусто.\n");
-                } else {
+                } 
+                else 
+                {
                     freeTree(current_root);
                     current_root = NULL; // Обновляем локальную копию
                     printf("Дерево успешно очищено.\n");
                 }
                 break;
             }
-            case 0: { // Выход
+            case 0: 
+            { // Выход
                 *program_running_flag = 0;
                 restart_program(program_running_flag);					                // функция перезапуска программы
                 // *root_ptr будет обновлен значением current_root в конце функции
