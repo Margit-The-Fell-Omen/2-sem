@@ -80,7 +80,7 @@ void inorderTraversal(Node* root)
     if (root != NULL) 
     {
         inorderTraversal(root->left);    // Сначала обходим левое поддерево
-        printf("%d ", root->data);       // Затем посещаем (печатаем) корень
+        printf("%d ", root->data);     // Затем посещаем (печатаем) корень
         inorderTraversal(root->right);   // Затем обходим правое поддерево
     }
 }
@@ -90,7 +90,7 @@ void preorderTraversal(Node* root)
 {
     if (root != NULL) 
     {
-        printf("%d ", root->data);       // Сначала посещаем (печатаем) корень
+        printf("%d ", root->data);     // Сначала посещаем (печатаем) корень
         preorderTraversal(root->left);   // Затем обходим левое поддерево
         preorderTraversal(root->right);  // Затем обходим правое поддерево
     }
@@ -103,7 +103,7 @@ void postorderTraversal(Node* root)
     {
         postorderTraversal(root->left);  // Сначала обходим левое поддерево
         postorderTraversal(root->right); // Затем обходим правое поддерево
-        printf("%d ", root->data);      // Затем посещаем (печатаем) корень
+        printf("%d ", root->data);     // Затем посещаем (печатаем) корень
     }
 }
 
