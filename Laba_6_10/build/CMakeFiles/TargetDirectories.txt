@@ -1,0 +1,4 @@
+/media/tim/UBUNTU 24_0/Laba_6_10/build/CMakeFiles/functions.dir
+/media/tim/UBUNTU 24_0/Laba_6_10/build/CMakeFiles/Laba_6_10.dir
+/media/tim/UBUNTU 24_0/Laba_6_10/build/CMakeFiles/edit_cache.dir
+/media/tim/UBUNTU 24_0/Laba_6_10/build/CMakeFiles/rebuild_cache.dir
