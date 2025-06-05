@@ -1,0 +1,1 @@
+/usr/bin/cc -g CMakeFiles/Laba_7_10.dir/main.c.o -o Laba_7_10  libfunctions.a 
